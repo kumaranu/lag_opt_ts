@@ -4,6 +4,18 @@ import pathlib
 
 
 def read_in_one_xyz_file(file_path):
+    """
+    Reads in one .xyz file and returns the atomic symbols and coordinates.
+
+    Args:
+        file_path (str or pathlib.Path): The path to the .xyz file.
+
+    Returns:
+        tuple: A tuple containing:
+            - atomic_symbols (list): A list of the atomic symbols of the atoms in the file.
+            - coords (numpy.ndarray): A numpy array of shape (n_atoms, 3) containing the coordinates of
+              the atoms in the file.
+    """
     f = open(file_path, 'r')
     inf = f.readlines()
     n_atoms = int(inf[0].strip())
@@ -14,6 +26,23 @@ def read_in_one_xyz_file(file_path):
 
 
 def read_in_multiple_xyz_file(file_path, n_images=10):
+    """
+    Read in a specified number of XYZ files from a given file path.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to the file containing XYZ files.
+    n_images : int, optional
+        Number of XYZ files to read in. Default is 10.
+
+    Returns
+    -------
+    tuple
+        A tuple containing:
+            - A list of atomic symbols for each image.
+            - A list of coordinates for each image.
+    """
     f = open(file_path, 'r')
     inf = f.readlines()
     f.close()
@@ -28,6 +57,26 @@ def read_in_multiple_xyz_file(file_path, n_images=10):
 
 
 def read_in():
+    """
+    Parse command-line arguments and return a namespace containing the parsed arguments.
+
+    This function uses the argparse module to parse command-line arguments for a geometry optimization job or a
+    transition state search using the geodesic algorithm and Lagrangian path optimization. The function returns
+    a namespace containing the parsed arguments, which can be accessed as attributes of the namespace.
+
+    Arguments:
+    None.
+
+    Returns:
+    args (argparse.Namespace): A namespace containing the parsed arguments.
+
+    Example:
+    To parse command-line arguments and get the parsed arguments in a namespace, call the function as follows:
+
+    ```
+    args = read_in()
+    ```
+    """
     ps = argparse.ArgumentParser(description="Optimization and transition state finding package",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter, add_help=False)
     ps.add_argument('--calc_type', type=int, default=1,
