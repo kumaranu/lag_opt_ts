@@ -6,14 +6,14 @@ link (https://www.overleaf.com/read/gcghnxkvqnms).
 # Lagrangian path optimization
 
 This code performs the following two tasks:
-* [Geometry optimization](#geometry_optimization)
-* [Lagrangian path optimization](#Lagrangian_path_optimization)
+* [Geometry optimization](#Geometry optimization)
+* [Lagrangian path optimization](#Lagrangian path optimization)
 
-## geometry_optimization
+## Geometry optimization
 1. You will need an initial molecular geometry
 2. Energy and force calculator
 
-## Lagrangian_path_optimization
+## Lagrangian path optimization
 1. You will need a reactant and a product geometry.
 2. Geodesic code will be used to obtain an initial path connecting the reactant and the products.
 3. Multiple options are provided to define the Lagrangian that is minimized to obtain the transition state geometry.
