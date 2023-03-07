@@ -1,12 +1,9 @@
-# lag_opt_ts
-
-
 
 More details regarding the theory will be updated on the overleaf
 link (https://www.overleaf.com/read/gcghnxkvqnms).
 
 
-# Project Name
+# Lagrangian path optimization
 
 This code performs the following two tasks:
 * [Geometry optimization](#geometry_optimization)
