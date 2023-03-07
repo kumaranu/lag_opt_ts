@@ -6,8 +6,8 @@ link (https://www.overleaf.com/read/gcghnxkvqnms).
 # Lagrangian path optimization
 
 This code performs the following two tasks:
-* [Geometry optimization](#Geometry optimization)
-* [Lagrangian path optimization](#Lagrangian path optimization)
+* [Geometry optimization](#Geometry-optimization)
+* [Lagrangian path optimization](#Lagrangian-path-optimization)
 
 ## Geometry optimization
 1. You will need an initial molecular geometry
