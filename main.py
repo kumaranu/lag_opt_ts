@@ -47,11 +47,12 @@ if __name__ == '__main__':
         # If the calculation requires molecular systems, use reactant and product geometries as two minima
         if args.calc_type == 0:
             args.minima1, args.minima2 = coords_r, coords_p
-        os.remove('all_path_e.txt')
+        if os.path.exists('all_path_e.txt'):
+            os.remove('all_path_e.txt')
         result = lagrangian.find_critical_path(args.calc_type, atomic_symbols=atomic_symbols,
                                                initial_points=coords_path, start=args.minima1,
                                                end=args.minima2, num_steps=args.max_iter,
-                                               step_factor=0.00008, a=0.001)
+                                               step_factor=0.00008, a=1)
         # result = np.loadtxt('outputPath.txt')
         # If the calculation requires molecular systems instead of analytic functions,
         # plot both initial path and final result
@@ -59,7 +60,7 @@ if __name__ == '__main__':
             plot_nth = 500
             plot_multiple_path_es(plot_nth, file_name='all_path_e.txt')
         elif args.calc_type == 1:
-            plot_contour(args.x_min, args.x_max, args.y_min, args.y_max, args.delta, coords_path,
-                         calc_type=args.calc_type, atomic_symbols=atomic_symbols)
+            # plot_contour(args.x_min, args.x_max, args.y_min, args.y_max, args.delta, coords_path,
+            #              calc_type=args.calc_type, atomic_symbols=atomic_symbols)
             plot_contour(args.x_min, args.x_max, args.y_min, args.y_max, args.delta, result, calc_type=args.calc_type,
                          atomic_symbols=atomic_symbols)
