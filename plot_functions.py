@@ -2,6 +2,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 from energy_and_grad import get_e, grid_gen, get_path_e
 
+def plot_multiple_path_es(n, file_name='all_path_e.txt', ylim=[-7476, -7470]):
+    # load the text file
+    with open(file_name, 'r') as f:
+        lines = f.readlines()
+    data = []
+    for i in range(0, len(lines), n):
+        row = lines[i].strip().split()
+        values = [float(val) for val in row]  # convert the values to floats
+        data.append(values)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    for i, values in enumerate(data):
+        # plt.plot(values, marker='o', markersize=0.1, label=f'Data {i+1}')
+        plt.plot(values, label=f'Data {i + 1}')
+    ax.set_xlabel('X-axis label')
+    ax.set_ylabel('Y-axis label')
+    ax.set_title('Publication-quality line plot')
+    ax.legend()
+    ax.set_ylim(ylim)
+    # Save the figure to a file
+    plt.savefig('line_plot.png', dpi=300)
+    # Show the plot
+    plt.show()
 
 def plot_contour(x_min, x_max, y_min, y_max, delta, opt_path, calc_type=1, atomic_symbols=None):
     """

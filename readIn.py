@@ -1,7 +1,7 @@
 import numpy as np
 import argparse
 import pathlib
-
+from logger import get_logger
 
 def read_in_one_xyz_file(file_path):
     """
@@ -124,7 +124,7 @@ def read_in():
                          'geodesic code.')
     ps.add_argument('--path_to_a_script_to_call_geodesic_code', type=str,
                     default='/home/kumaranu/Documents/testing_geodesic')
-    ps.add_argument('--xyz_r_p', type=pathlib.Path, default=pathlib.Path(__file__).absolute(),
+    ps.add_argument('--xyz_r_p', type=pathlib.Path, default='/home/kumaranu/Documents/testing_geodesic/inputs/abcd/init_path.xyz',
                     help='This is a file that contains reactant and product geometry in the xyz format.')
     args = ps.parse_args()
     if args.calc_type == 0:
@@ -140,4 +140,28 @@ def read_in():
                         help='Initial point/geometry for the optimization job.')
         ps.add_argument('--atomic_symbols', type=list, default=[], help='Here, no labels for analytic functions.')
     args = ps.parse_args()
+
+    logger = get_logger('my_logger', 'lag_opt.log')
+    logger.debug(f"calc_type argument: {args.calc_type}")
+    logger.debug(f"job_type argument: {args.job_type}")
+    logger.debug(f"n_images argument: {args.n_images}")
+    logger.debug(f"x_min argument: {args.x_min}")
+    logger.debug(f"x_max argument: {args.x_max}")
+    logger.debug(f"y_min argument: {args.y_min}")
+    logger.debug(f"y_max argument: {args.y_max}")
+    logger.debug(f"delta argument: {args.delta}")
+    logger.debug(f"alpha argument: {args.alpha}")
+    logger.debug(f"eps   argument: {args.eps  }")
+    logger.debug(f"max_iter argument: {args.max_iter}")
+    logger.debug(f"minima1 argument: {args.minima1}")
+    logger.debug(f"minima2 argument: {args.minima2}")
+    logger.debug(f"special_point argument: {args.special_point}")
+    logger.debug(f"xyz_r argument: {args.xyz_r}")
+    logger.debug(f"xyz_p argument: {args.xyz_p}")
+    logger.debug(f"xyz_p argument: {args.xyz_p}")
+    logger.debug(f"path_to_a_script_to_call_geodesic_code argument: {args.path_to_a_script_to_call_geodesic_code}")
+    logger.debug(f"xyz_r argument: {args.xyz_r}")
+    logger.debug(f"init_geom argument: {args.init_geom}")
+    logger.debug(f"atomic_symbols argument: {args.atomic_symbols}")
+
     return args

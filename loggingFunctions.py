@@ -53,9 +53,14 @@ def save_all_geoms(atomic_symbols, opt_path, log_file='allGeoms.xyz'):
         - The second line is blank
         - Each subsequent line contains an atomic symbol followed by the x, y, and z coordinates of the atom
     """
-    file1 = open(log_file, 'a')
-    n_atoms = len(opt_path[0])
-    for i in range(len(opt_path)):
+    file1 = open(log_file, 'w')
+    n_geoms = len(opt_path)
+    n_atoms = len(atomic_symbols)
+    # print('n_atoms:', n_atoms)
+    # print('n_geoms:', n_geoms)
+    opt_path = np.reshape(opt_path, (n_geoms, n_atoms, 3))
+    for i in range(n_geoms):
+        # print('i in write xyz', i)
         file1.write(str(n_atoms) + '\n\n')
         for j in range(n_atoms):
             file1.write(atomic_symbols[j] + ' ' + str(opt_path[i][j][0]) + ' ' + str(opt_path[i][j][1]) +
@@ -63,7 +68,7 @@ def save_all_geoms(atomic_symbols, opt_path, log_file='allGeoms.xyz'):
     file1.close()
 
 
-def write_xyz(coords, symbols):
+def write_xyz(coords, atomic_symbols=None, path_to_write=os.getcwd(), file_name='test'):
     """
     Write the atomic coordinates in xyz format to a file named 'test.xyz'.
 
@@ -74,14 +79,14 @@ def write_xyz(coords, symbols):
     Returns:
     None
     """
-    n_atoms = len(symbols)
+    n_atoms = len(atomic_symbols)
     coords = np.reshape(coords, (n_atoms, 3))
     file_str = str(n_atoms) + '\n'
     for i in range(n_atoms):
-        file_str += '\n' + symbols[i] + ' ' + str(coords[i][0]) + ' ' + str(coords[i][1]) + ' ' + str(coords[i][2])
+        file_str += '\n' + atomic_symbols[i] + ' ' + str(coords[i][0]) + ' ' + str(coords[i][1]) + ' ' + str(coords[i][2])
     file_str += '\n'
 
-    file1 = open('test.xyz', 'w')
+    file1 = open(path_to_write + '/' + file_name, 'w')
     file1.write(file_str)
     file1.close()
 
