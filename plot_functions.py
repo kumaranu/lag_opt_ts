@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from energy_and_grad import get_e, grid_gen, get_path_e
+from energy_and_grad import get_e_and_e_grad, grid_gen, get_path_e
 
-def plot_multiple_path_es(n, file_name='all_path_e.txt', ylim=[-7476, -7470]):
+
+def plot_multiple_path_es(n, file_name='all_path_e.txt'):
     # load the text file
     with open(file_name, 'r') as f:
         lines = f.readlines()
@@ -15,16 +16,20 @@ def plot_multiple_path_es(n, file_name='all_path_e.txt', ylim=[-7476, -7470]):
     fig, ax = plt.subplots(figsize=(8, 6))
     for i, values in enumerate(data):
         # plt.plot(values, marker='o', markersize=0.1, label=f'Data {i+1}')
-        plt.plot(values, label=f'Data {i + 1}')
+        if np.max(values) < 10000:
+            plt.plot(values, label=f'Data {i + 1}')
     ax.set_xlabel('X-axis label')
     ax.set_ylabel('Y-axis label')
     ax.set_title('Publication-quality line plot')
     ax.legend()
-    ax.set_ylim(ylim)
+    #ax.set_ylim(ylim)
+
     # Save the figure to a file
     plt.savefig('line_plot.png', dpi=300)
+
     # Show the plot
     plt.show()
+
 
 def plot_contour(x_min, x_max, y_min, y_max, delta, opt_path, calc_type=1, atomic_symbols=None):
     """
@@ -50,14 +55,14 @@ def plot_contour(x_min, x_max, y_min, y_max, delta, opt_path, calc_type=1, atomi
     elif calc_type == 1:
         # Generate a grid of points over the x and y range and calculate the energies at each point
         x, y = grid_gen(x_min, x_max, y_min, y_max, delta)
-        z = get_e((x, y), calc_type=calc_type)
-
+        x_y_pairs = np.transpose(np.vstack((x.flatten(), y.flatten())))
+        z_list, _ = get_e_and_e_grad(x_y_pairs, calc_type=calc_type)
+        z = np.reshape(z_list, x.shape)
         # Set the contour levels for the plot
         type1 = np.linspace(np.min(z), np.max(z)/9, 25, endpoint=False)
         type2 = np.linspace(np.max(z)/9, np.max(z)/2, 3, endpoint=False)
         type3 = np.linspace(np.max(z)/2, np.max(z), 1, endpoint=False)
         contour_levels = np.hstack((type1, type2, type3))
-
         # Create the contour plot
         origin = 'lower'
         fig2, ax2 = plt.subplots(constrained_layout=True)
@@ -72,7 +77,7 @@ def plot_contour(x_min, x_max, y_min, y_max, delta, opt_path, calc_type=1, atomi
         # Overlay the optimization path on the plot
         opt_path = np.asarray(opt_path)
         markers_on = np.arange(1, len(opt_path), 2)
-        ax2.plot(opt_path[:, 0], opt_path[:, 1], '-gD', markevery=markers_on, markersize=2)
+        ax2.plot(opt_path[:, 0], opt_path[:, 1], '-gD', markevery=markers_on, markersize=4)
 
         # Show the plot
         plt.show()

@@ -2,9 +2,21 @@ import numpy as np
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from loggingFunctions import write_xyz, xyz_to_pdb, save_all_geoms
+import os
+import re
+import ase.data
+import ase.io
+import numpy as np
+import torch
+
+from mace import data
+from mace.tools import torch_geometric, utils, torch_tools
+from ase import Atoms
 
 
-def get_e_and_e_grad(coords, atomic_symbols=None, model_software='mace_model', calc_type=0):
+def get_e_and_e_grad(coords, atomic_symbols=None,
+                     model_software='mace_model', calc_type=0):
+                     #model_software = 'rdkit', calc_type = 0):
     """
     Calculates the potential energy and gradient of a set of molecular coordinates using
     the Universal Force Field (UFF).
@@ -22,8 +34,8 @@ def get_e_and_e_grad(coords, atomic_symbols=None, model_software='mace_model', c
     dx2, dy2, dz2, ..., dxn, dyn, dzn].
     """
     # Write coordinates to an XYZ file and convert to PDB format
+    energies, gradients = [], []
     if calc_type == 0:
-        #write_xyz(coords, atomic_symbols=atomic_symbols)
         save_all_geoms(atomic_symbols, coords, log_file='test.xyz')
         if model_software == 'rdkit':
             xyz_to_pdb()
@@ -34,32 +46,47 @@ def get_e_and_e_grad(coords, atomic_symbols=None, model_software='mace_model', c
             energy = ff.CalcEnergy()
             gradient = ff.CalcGrad()
         elif model_software == 'mace_model':
-            import os
-            os.system('python eval_configs.py  --configs test.xyz '
-                      '--model MACE_model_cpu.model --output mace_output.txt --batch 4 '
-                      '--default_dtype float32')
-            energy, gradient = extract_e_f(len(atomic_symbols))
-            # print('energy:', energy)
-            # print('gradient:', gradient)
-    return energy, gradient
+            model = '/home/kumaranu/PycharmProjects/optimization_0/MACE_model_cpu.model'
+            atomic_numbers = [ase.data.atomic_numbers[s] for s in atomic_symbols]
+            list_of_ase_configs = []
+            for i in range(len(coords)):
+                list_of_ase_configs.append(Atoms(numbers=atomic_numbers,
+                                                 positions=np.reshape(coords[i], (len(atomic_symbols), 3))))
+            energies, gradients = mace_wrapper(model, list_of_ase_configs, default_dtype='float32')
+            energies = list(energies)
+    elif calc_type == 1:
+        # Calculate energy using Schlegel's function
+        for coord in coords:
+            energy_coord = 10 * (coord[0] ** 4 + coord[1] ** 4 - 2 * coord[0] ** 2 -
+                                 4 * coord[1] ** 2 + coord[0] * coord[1] + 0.2 * coord[0] + 0.1 * coord[1])
+            gradient_coord = 10 * np.asarray([4 * coord[0] ** 3 - 4 * coord[0] + coord[1] + 0.2,
+                                              4 * coord[1] ** 3 - 8 * coord[1] + coord[0] + 0.1])
+            energies.append(energy_coord)
+            gradients.append(gradient_coord)
+    elif calc_type == 2:
+        # Calculate energy using harmonic approximation
+        for coord in coords:
+            energy_coord = coords[0] ** 2 + coords[1] ** 2
+            gradient_coord = np.asarray([2 * coords[0], 2 * coords[1]])
+            energies.append(energy_coord)
+            gradients.append(gradient_coord)
+    return energies, gradients
 
 
 def extract_e_f(n_atoms, mace_output_file='mace_output.txt'):
-    import re
     with open('mace_output.txt', 'r') as file:
-        INF = file.read()
+        inf = file.read()
     pattern = r'MACE_energy=(-?\d+\.\d+)'
-    matches = re.findall(pattern, INF)
+    matches = re.findall(pattern, inf)
     energies, gradients = [0], [[0]]
     if matches:
         energies = [float(match) for match in matches]
-        #print(f'MACE_energy values: {energies}')
     else:
         print('MACE_energy not found')
     pattern = r'^([A-Za-z]+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+' \
               r'([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)\s+([-+]?\d+\.\d+)$'
     forces = []
-    for line in INF.split('\n'):
+    for line in inf.split('\n'):
         match = re.match(pattern, line)
         if match:
             force_values = tuple(map(float, match.group(5, 6, 7)))
@@ -68,57 +95,7 @@ def extract_e_f(n_atoms, mace_output_file='mace_output.txt'):
     return energies, gradients
 
 
-def get_e(x, atomic_symbols=None, calc_type=0):
-    """
-    Calculates the energy of a molecular geometry using the UFF force field or a test function.
-
-    Args:
-        x (list): Cartesian coordinates of the molecular geometry
-        atomic_symbols (list): List of atomic symbols (optional, only used if UFF force
-        field is used)
-        calc_type (int): Type of energy calculation to perform (0 for UFF force field,
-        1 for test function 1, 2 for test function 2)
-
-    Returns:
-        float: Energy of the molecular geometry
-    """
-    if calc_type == 0:
-        # Calculate energy using UFF force field
-        return get_e_and_e_grad(x, atomic_symbols=atomic_symbols)[0]
-    elif calc_type == 1:
-        # Calculate energy using Schlegel's function
-        return 10 * (x[0] ** 4 + x[1] ** 4 - 2 * x[0] ** 2 - 4 * x[1] ** 2 + x[0] * x[1] + 0.2 * x[0] + 0.1 * x[1])
-    elif calc_type == 2:
-        # Calculate energy using harmonic approximation
-        return x[0] ** 2 + x[1] ** 2
-
-
-def get_e_grad(x, atomic_symbols=None, calc_type=0):
-    """
-    Calculates the energy gradient at a given set of atomic coordinates using the UFF
-    force field.
-
-    Args:
-    - x (ndarray): 1D numpy array of atomic coordinates.
-    - atomic_symbols (list, optional): List of atomic symbols in the same order as the
-    atomic coordinates. Default is None.
-    - calc_type (int, optional): The type of energy calculation to perform. Default is 0.
-
-    Returns:
-    - ndarray: 1D numpy array of energy gradients at the given set of atomic coordinates.
-    """
-    if calc_type == 0:
-        # If using the UFF force field
-        return np.asarray(get_e_and_e_grad(x, atomic_symbols=atomic_symbols)[1]).flatten()
-    elif calc_type == 1:
-        # If using the Schlegel's function
-        return 10 * np.asarray([4 * x[0] ** 3 - 4 * x[0] + x[1] + 0.2, 4 * x[1] ** 3 - 8 * x[1] + x[0] + 0.1])
-    elif calc_type == 2:
-        # If using the simple quadratic function
-        return np.asarray([2 * x[0], 2 * x[1]])
-
-
-def get_path_e(path_coords, atomic_symbols=None, calc_type=None):
+def get_path_e(path_coords, atomic_symbols=None, calc_type=None, all_path_e_file=None):
     """
     Compute the energy of a path of geometries.
 
@@ -136,19 +113,17 @@ def get_path_e(path_coords, atomic_symbols=None, calc_type=None):
     Returns:
         list: A list of energies for each geometry in the path.
     """
-    all_e, all_e_grad = [], []
+    n_atoms = int(len(path_coords[0])/3)
+    n_geoms = len(path_coords)
     if calc_type == 0:
-        n_atoms = int(len(path_coords[0])/3)
-        n_geoms = len(path_coords)
         path_coords = np.reshape(path_coords, (n_geoms, 3 * n_atoms))
-        #for i in path_coords:
-        #    geom = np.reshape(i, (n_atoms, 3))
-        #    all_e.append(get_e(geom, atomic_symbols=atomic_symbols, calc_type=calc_type))
-        all_e, all_e_grad = get_e_and_e_grad(path_coords, atomic_symbols=atomic_symbols, calc_type=calc_type)
-    elif calc_type == 1:
-        for i in path_coords:
-            all_e.append(get_e(i, calc_type=calc_type))
-            all_e_grad.append(get_e_grad(i, atomic_symbols=atomic_symbols, calc_type=calc_type))
+    all_e, all_e_grad = get_e_and_e_grad(path_coords, atomic_symbols=atomic_symbols, calc_type=calc_type)
+
+    if all_path_e_file is not None:
+        with open(all_path_e_file, 'a') as f:
+            f.write(' '.join(np.asarray(all_e).astype(str)))
+            f.write('\n')
+
     return all_e, all_e_grad
 
 
@@ -175,3 +150,53 @@ def grid_gen(x_min, x_max, y_min, y_max, delta):
     x_grid, y_grid = np.meshgrid(x, y, indexing='ij')
 
     return [x_grid, y_grid]
+
+
+def mace_wrapper(model, list_of_ase_configs, default_dtype='double', device='cpu', batch_size=64,
+         compute_stress=False):
+    '''
+
+    :param model: type(str), Required argument, path to the model
+    :param configs: type(str), Required argument, path to the xyz configurations
+    :param output: type(str), Required argument, path to the output of the model
+    :param default_dtype: type(str), choices[float32, float64, double (default)]
+    :param device: type(str), choices['cpu (default), 'cuda']
+    :param batch_size: type(int), batch size, default=64
+    :param compute_stress: type(bool), compute stress, default=False
+    :param return_contributions: type(bool), model outputs energy contributions for each body order,
+    only supported for MACE, not ScaleShiftMACE, default=False
+    :param info_prefix: type(str), prefix for energy, forces and stress keys, default=MACE_
+    :return: None
+    '''
+
+    torch_tools.set_default_dtype(default_dtype)
+    device = torch_tools.init_device(device)
+
+    # Load model
+    model = torch.load(model, map_location=device)
+
+    configs = [data.config_from_atoms(atoms) for atoms in list_of_ase_configs]
+
+    z_table = utils.AtomicNumberTable([int(z) for z in model.atomic_numbers])
+    data_loader = torch_geometric.dataloader.DataLoader(
+        dataset=[data.AtomicData.from_config(config, z_table=z_table, cutoff=float(model.r_max)) for config
+                 in configs],
+        batch_size=batch_size,
+        shuffle=False,
+        drop_last=False,
+    )
+
+    # Collect data
+    energies_list = []
+    forces_collection = []
+
+    for batch in data_loader:
+        batch = batch.to(device)
+        output = model(batch.to_dict(), compute_stress=compute_stress)
+        energies_list.append(torch_tools.to_numpy(output["energy"]))
+        forces = np.split(torch_tools.to_numpy(output["forces"]), indices_or_sections=batch.ptr[1:], axis=0)
+        forces_collection.append(forces[:-1])  # drop last as its emtpy
+
+    energies = np.concatenate(energies_list, axis=0)
+    forces_list = [forces for forces_list in forces_collection for forces in forces_list]
+    return [energies, forces_list]

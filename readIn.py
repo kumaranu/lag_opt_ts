@@ -3,6 +3,7 @@ import argparse
 import pathlib
 from logger import get_logger
 
+
 def read_in_one_xyz_file(file_path):
     """
     Reads in one .xyz file and returns the atomic symbols and coordinates.
@@ -97,9 +98,9 @@ def read_in():
                     help='Lower bound for the y dimension. It is used for contour plotting.')
     ps.add_argument('--y_max', type=float, default=2.0,
                     help='Upper bound for the y dimension. It is used for contour plotting.')
-    ps.add_argument('--delta', type=float, default=0.001,
+    ps.add_argument('--delta', type=float, default=0.07,
                     help='The spacing between the grid points used to generate the contour plot.')
-    ps.add_argument('--alpha', type=float, default=0.001,
+    ps.add_argument('--step_size', type=float, default=0.0001,
                     help='Step size for the optimization.')
     ps.add_argument('--eps', type=float, default=1e-9,
                     help='The epsilon value for the energy convergence criteria used by the optimization process.')
@@ -112,23 +113,27 @@ def read_in():
     ps.add_argument('--special_point', type=list, default=[0.1, 0.1],
                     help='This is one of the points on the path. It should connect the reactant '
                          'geometry to the product geometry.')
-    # ps.add_argument('--xyz_r', type=str, default='/home/kumaranu/Documents/testing_geodesic/inputs/1_0rct11.xyz',
-    ps.add_argument('--xyz_r', type=str, default='/home/kumaranu/Documents/testing_geodesic/inputs/1_0rct11.xyz',
-                    help='This is the path to an xyz-formatted file for the reactant geometry.')
-    # ps.add_argument('--xyz_p', type=str, default='/home/kumaranu/Documents/testing_geodesic/inputs/4_1rct56.xyz',
-    ps.add_argument('--xyz_p', type=str, default='/home/kumaranu/Documents/testing_geodesic/inputs/2_0pro44.xyz',
-                    help='This is the path to an xyz-formatted file for the product geometry.')
     ps.add_argument('--xyz_path', type=str, default='/home/kumaranu/Documents/testing_geodesic/inputs/12/output.xyz',
                     help='This is the path to an xyz-formatted file for the list of geometries defining an initial '
                          'path connecting the reactant to the product. It could be something like the output of the '
                          'geodesic code.')
+    ps.add_argument('--a', type=float, default=200.0, help='The coefficient for the distance term between the images.')
+    ps.add_argument('--nth', type=int, default=10, help='Frequency of the path energies to plot. '
+                                                        'For example, nth=10 would mean that the code will plot every '
+                                                        '10th step in the Lagrangian path optimization.')
     ps.add_argument('--path_to_a_script_to_call_geodesic_code', type=str,
                     default='/home/kumaranu/Documents/testing_geodesic')
-    ps.add_argument('--xyz_r_p', type=pathlib.Path, default='/home/kumaranu/Documents/testing_geodesic/inputs/abcd/init_path.xyz',
+    ps.add_argument('--all_path_e_file', type=pathlib.Path, default='all_path_e',
+                    help='This is the file where the energies for the Lagrangian paths will be saved.')
+    ps.add_argument('--xyz_r_p', type=pathlib.Path,
+                    default='/home/kumaranu/Documents/testing_geodesic/inputs/abcd/A_C+D.xyz',
                     help='This is a file that contains reactant and product geometry in the xyz format.')
+    ps.add_argument('--xyz_file_init_geom', type=pathlib.Path,
+                    default='/home/kumaranu/Documents/testing_geodesic/inputs/abcd/A.xyz',
+                    help='This is the starting geometry for the geometry optimization')
     args = ps.parse_args()
     if args.calc_type == 0:
-        atomic_symbols, x0 = read_in_one_xyz_file(args.xyz_r)
+        atomic_symbols, x0 = read_in_one_xyz_file(args.xyz_file_init_geom)
         ps.add_argument('--init_geom', type=list, default=list(x0.flatten()),
                         help='Here, we update x0 with the initial geometry from the xyz-formatted file provided by '
                              'the user.')
@@ -150,17 +155,13 @@ def read_in():
     logger.debug(f"y_min argument: {args.y_min}")
     logger.debug(f"y_max argument: {args.y_max}")
     logger.debug(f"delta argument: {args.delta}")
-    logger.debug(f"alpha argument: {args.alpha}")
+    logger.debug(f"step_size argument: {args.step_size}")
     logger.debug(f"eps   argument: {args.eps  }")
     logger.debug(f"max_iter argument: {args.max_iter}")
     logger.debug(f"minima1 argument: {args.minima1}")
     logger.debug(f"minima2 argument: {args.minima2}")
     logger.debug(f"special_point argument: {args.special_point}")
-    logger.debug(f"xyz_r argument: {args.xyz_r}")
-    logger.debug(f"xyz_p argument: {args.xyz_p}")
-    logger.debug(f"xyz_p argument: {args.xyz_p}")
     logger.debug(f"path_to_a_script_to_call_geodesic_code argument: {args.path_to_a_script_to_call_geodesic_code}")
-    logger.debug(f"xyz_r argument: {args.xyz_r}")
     logger.debug(f"init_geom argument: {args.init_geom}")
     logger.debug(f"atomic_symbols argument: {args.atomic_symbols}")
 
