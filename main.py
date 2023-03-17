@@ -53,7 +53,8 @@ if __name__ == '__main__':
         result = lagrangian.find_critical_path(args.calc_type, atomic_symbols=atomic_symbols,
                                                initial_points=coords_path, start=args.minima1,
                                                end=args.minima2, num_steps=args.max_iter,
-                                               step_factor=args.step_size, a=args.a, eps=args.eps,
+                                               step_factor=args.step_size, action_type=args.action_type,
+                                               a=args.a, eps=args.eps,
                                                all_path_e_file=args.all_path_e_file)
         if args.calc_type == 0:
             plot_nth = args.nth

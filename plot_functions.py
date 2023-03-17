@@ -16,8 +16,8 @@ def plot_multiple_path_es(n, file_name='all_path_e.txt'):
     fig, ax = plt.subplots(figsize=(8, 6))
     for i, values in enumerate(data):
         # plt.plot(values, marker='o', markersize=0.1, label=f'Data {i+1}')
-        if np.max(values) < 10000:
-            plt.plot(values, label=f'Data {i + 1}')
+        #if np.max(values) < 10000:
+        plt.plot(values, label=f'Data {i + 1}')
     ax.set_xlabel('X-axis label')
     ax.set_ylabel('Y-axis label')
     ax.set_title('Publication-quality line plot')
@@ -77,7 +77,9 @@ def plot_contour(x_min, x_max, y_min, y_max, delta, opt_path, calc_type=1, atomi
         # Overlay the optimization path on the plot
         opt_path = np.asarray(opt_path)
         markers_on = np.arange(1, len(opt_path), 2)
-        ax2.plot(opt_path[:, 0], opt_path[:, 1], '-gD', markevery=markers_on, markersize=4)
+        ax2.plot(opt_path[:, 0], opt_path[:, 1],
+                 '-o', color='brown', markerfacecolor='yellow',
+                 markersize=8, linewidth=3)
 
         # Show the plot
         plt.show()
@@ -141,7 +143,7 @@ def plot_path_e(path_e, x_label='Iterations', y_label='Energy (kcal/mol)',
     ax2 = axs[1]
     markers_on = np.arange(1, len(path_e), 2)
     path_e = path_e - np.min(path_e)
-    ax2.plot(np.arange(len(path_e)), path_e, '-gD', markevery=markers_on, markersize=1)
+    ax2.plot(np.arange(len(path_e)), path_e, '-o', color='brown', markerfacecolor='yellow', markersize=1)
     ax2.set_xlabel(x_label)
     ax2.set_ylabel(y_label)
     ax2.set_ylim([0, 10])

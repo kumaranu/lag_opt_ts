@@ -182,7 +182,7 @@ def lagrangian(all_pts, all_e, a):
     return lag
 
 
-def grad_lagrangian(all_pts, a, path_e, path_e_grad):
+def grad_lagrangian(all_pts, a, path_e, path_e_grad, action_type=1):
     """
     Compute the gradient of the Lagrangian for a given set of points.
 
@@ -204,17 +204,42 @@ def grad_lagrangian(all_pts, a, path_e, path_e_grad):
 
         # Compute the gradient of the action for the left and right intervals and add them up.
         grad_lag[i] = np.array(grad_action_r(all_pts[i], all_pts[i+1], path_e[i], path_e[i+1],
-                                             np.asarray(path_e_grad[i+1]).flatten(), a)) + \
+                                             np.asarray(path_e_grad[i+1]).flatten(), a, action_type=action_type)) + \
                       np.array(grad_action_l(all_pts[i+1], all_pts[i+2], path_e[i+1], path_e[i+2],
-                                             np.asarray(path_e_grad[i+1]).flatten(), a))
+                                             np.asarray(path_e_grad[i+1]).flatten(), a, action_type=action_type))
 
     # Return the computed gradient of the Lagrangian.
     return grad_lag
 
 
+def parallel_perpendicular(u, v):
+
+    # print(type(u))
+    # print(type(v))
+    # print(u)
+    # print(v)
+    proj_v_u = np.dot(u, v) / np.dot(v, v) * v
+    perp_v_u = u - proj_v_u
+    return proj_v_u, perp_v_u
+
+
+def path_grad_components(path, grads):
+    # print('path:', path)
+    # print('grads:', grads)
+    parallel_grads_list, perp_grads_list = [], []
+    for i in range(1, len(path)-1):
+        v = path[i+1] - path[i-1]
+        u = grads[i]
+        proj_v_u, perp_v_u = parallel_perpendicular(u, v)
+        parallel_grads_list.append(proj_v_u)
+        perp_grads_list.append(perp_v_u)
+    return parallel_grads_list, perp_grads_list
+
+
 def find_critical_path(calc_type, atomic_symbols=None, initial_points=None,
                        start=None, end=None, num_steps=None, step_factor=None,
-                       a=None, eps=0.001, all_path_e_file='all_path_e.txt',
+                       action_type=1, a=None, eps=0.001,
+                       all_path_e_file='all_path_e.txt',
                        output_path_file='output_path.txt'):
     """
     Find the critical path using gradient descent.
@@ -239,7 +264,7 @@ def find_critical_path(calc_type, atomic_symbols=None, initial_points=None,
     e_r_p, e_grad_r_p = get_path_e(np.asarray([start, end]), atomic_symbols=atomic_symbols,
                                    calc_type=calc_type)
     start_e, start_e_grad, end_e, end_e_grad = e_r_p[0], e_grad_r_p[0], e_r_p[1], e_grad_r_p[1]
-    all_path_e = []
+    all_path_e, all_path_coords = [], []
     for step in range(num_steps):
         path_e, path_e_grad = get_path_e(points, atomic_symbols=atomic_symbols, calc_type=calc_type)
 
@@ -250,11 +275,27 @@ def find_critical_path(calc_type, atomic_symbols=None, initial_points=None,
         all_path_e.append(path_e)
         all_pts = np.vstack((start, points, end))
 
-        points = points - step_factor * grad_lagrangian(all_pts, a, path_e, path_e_grad)
+        parallel_grads, perp_grads = path_grad_components(all_pts, path_e_grad)
+        perp_grads.insert(0, start_e_grad)
+        perp_grads.append(end_e_grad)
+
+        parallel_grads.insert(0, start_e_grad)
+        parallel_grads.append(end_e_grad)
+
+        # points = points - step_factor * grad_lagrangian(all_pts, a, path_e, path_e_grad, action_type=action_type)
+        points = points - step_factor * grad_lagrangian(all_pts, a, path_e, perp_grads, action_type=action_type)
+
         if np.linalg.norm(points_old - points) < eps:
             print('Lagrangian path optimization converged in ', step, 'steps.')
             break
         points_old = points
+        all_path_coords.append(points)
+    if calc_type == 0:
+        counter = 0
+        from loggingFunctions import save_all_geoms
+        for path_coords in all_path_coords:
+            save_all_geoms(atomic_symbols, path_coords, log_file='lag_opt_path' + str(counter) + '.xyz')
+            counter = counter + 1
 
     # Save the final points to a file.
     np.savetxt(output_path_file, points, fmt='%.5f')

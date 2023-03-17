@@ -51,9 +51,14 @@ def get_e_and_e_grad(coords, atomic_symbols=None,
             list_of_ase_configs = []
             for i in range(len(coords)):
                 list_of_ase_configs.append(Atoms(numbers=atomic_numbers,
-                                                 positions=np.reshape(coords[i], (len(atomic_symbols), 3))))
+                                                 positions=np.reshape(coords[i], (len(atomic_symbols), 3)),
+                                                 cell=list([50, 50, 50])))
+
             energies, gradients = mace_wrapper(model, list_of_ase_configs, default_dtype='float32')
             energies = list(energies)
+            # print('type(gradients):', type(gradients))
+            # print('type(gradients[0]):', type(gradients[0]))
+            gradients = [i.flatten() for i in gradients]
     elif calc_type == 1:
         # Calculate energy using Schlegel's function
         for coord in coords:
@@ -113,10 +118,6 @@ def get_path_e(path_coords, atomic_symbols=None, calc_type=None, all_path_e_file
     Returns:
         list: A list of energies for each geometry in the path.
     """
-    n_atoms = int(len(path_coords[0])/3)
-    n_geoms = len(path_coords)
-    if calc_type == 0:
-        path_coords = np.reshape(path_coords, (n_geoms, 3 * n_atoms))
     all_e, all_e_grad = get_e_and_e_grad(path_coords, atomic_symbols=atomic_symbols, calc_type=calc_type)
 
     if all_path_e_file is not None:

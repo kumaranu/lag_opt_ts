@@ -131,6 +131,11 @@ def read_in():
     ps.add_argument('--xyz_file_init_geom', type=pathlib.Path,
                     default='/home/kumaranu/Documents/testing_geodesic/inputs/abcd/A.xyz',
                     help='This is the starting geometry for the geometry optimization')
+    ps.add_argument('--action_type', type=int, default=1, help='action_type = 0 means defining the '
+                                                               'displacement term in action using exponential.'
+                                                               'action_type = 1 means defining the displacement'
+                                                               'term in action using just the distance between the'
+                                                               'two geometries.')
     args = ps.parse_args()
     if args.calc_type == 0:
         atomic_symbols, x0 = read_in_one_xyz_file(args.xyz_file_init_geom)
@@ -164,5 +169,5 @@ def read_in():
     logger.debug(f"path_to_a_script_to_call_geodesic_code argument: {args.path_to_a_script_to_call_geodesic_code}")
     logger.debug(f"init_geom argument: {args.init_geom}")
     logger.debug(f"atomic_symbols argument: {args.atomic_symbols}")
-
+    logger.debug(f"action_type argument: {args.action_type}")
     return args
