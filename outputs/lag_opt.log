@@ -1,101 +1,31 @@
-2023-04-08 19:51:54,108 - my_logger - INFO - Inside lag-opt package.
-2023-04-08 19:51:54,108 - my_logger - INFO - Read-in user arguments.
-2023-04-08 19:51:54,108 - my_logger - DEBUG - calc_type argument: 0
-2023-04-08 19:51:54,108 - my_logger - DEBUG - job_type argument: ts_lag
-2023-04-08 19:51:54,108 - my_logger - DEBUG - n_images argument: 40
-2023-04-08 19:51:54,108 - my_logger - DEBUG - x_min argument: -2.0
-2023-04-08 19:51:54,108 - my_logger - DEBUG - x_max argument: 2.0
-2023-04-08 19:51:54,108 - my_logger - DEBUG - y_min argument: -2.0
-2023-04-08 19:51:54,108 - my_logger - DEBUG - y_max argument: 2.0
-2023-04-08 19:51:54,108 - my_logger - DEBUG - delta argument: 0.07
-2023-04-08 19:51:54,108 - my_logger - DEBUG - step_size_g_opt argument: 0.002
-2023-04-08 19:51:54,108 - my_logger - DEBUG - eps_g_opt argument: 1e-07
-2023-04-08 19:51:54,108 - my_logger - DEBUG - step_size_l_opt argument: 0.0001
-2023-04-08 19:51:54,108 - my_logger - DEBUG - eps_l_opt argument: 1e-09
-2023-04-08 19:51:54,108 - my_logger - DEBUG - max_iter_g_opt argument: 10
-2023-04-08 19:51:54,108 - my_logger - DEBUG - max_iter_l_opt argument: 2000
-2023-04-08 19:51:54,108 - my_logger - DEBUG - minima1 argument: [-1.1659786, 1.4766458]
-2023-04-08 19:51:54,108 - my_logger - DEBUG - minima2 argument: [1.1330013, -1.4857527]
-2023-04-08 19:51:54,108 - my_logger - DEBUG - special_point argument: [0.1, 0.1]
-2023-04-08 19:51:54,108 - my_logger - DEBUG - geodesic_code argument: /home/kumaranu/Documents/testing_geodesic
-2023-04-08 19:51:54,108 - my_logger - DEBUG - init_geom argument: [-1.114431, 0.174212, -0.082544, -0.045054, 1.08464, -0.011421, -0.65645, -1.13852, 0.200052, 1.117217, 0.297247, 0.06366, 0.8052, -1.060986, -0.20347, -1.238315, -1.86305, -0.38273, -0.768333, -1.360187, 1.27608, 0.940937, -1.281426, -1.276874, 1.462818, -1.710564, 0.387237, -0.16701, 3.060957, -0.021043]
-2023-04-08 19:51:54,108 - my_logger - DEBUG - atomic_symbols argument: ['O', 'C', 'C', 'O', 'C', 'H', 'H', 'H', 'H', 'Li']
-2023-04-08 19:51:54,108 - my_logger - DEBUG - action_type argument: 1
-2023-04-08 19:51:54,108 - my_logger - DEBUG - path_grad_type argument: 1
-2023-04-08 19:51:54,108 - my_logger - INFO - This is a transition state calculation.
-2023-04-08 19:51:54,108 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
-2023-04-08 19:52:23,381 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
-2023-04-08 19:59:27,776 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16270575e+00  5.31311113e-01 -5.36007284e-02 -8.90505850e-02
-  1.46109306e+00 -1.92770312e-02 -6.72329258e-01 -7.69246610e-01
-  2.53127932e-01  1.09026798e+00  6.65998236e-01 -8.81617738e-04
-  7.55714446e-01 -6.96063441e-01 -2.46241835e-01 -1.28663741e+00
- -1.51394966e+00 -2.57041174e-01 -7.09007599e-01 -9.44820810e-01
-  1.33832600e+00  8.17114431e-01 -9.16856304e-01 -1.32180438e+00
-  1.45132183e+00 -1.33947071e+00  2.96761829e-01 -1.94688076e-01
-  3.52200512e+00  1.06310042e-02]
-2023-04-08 19:59:27,778 - my_logger - DEBUG - Minimum energy value: -7474.382432355378
-2023-04-08 19:59:27,778 - my_logger - DEBUG - The number of iterations: 2000
-2023-04-08 20:06:16,701 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16138332  0.53276057 -0.05030348 -0.08621362  1.46114388 -0.01705539
- -0.67251847 -0.76920034  0.2529616   1.0917551   0.66439977  0.0047528
-  0.7555613  -0.69621015 -0.24615339 -1.28773353 -1.51181055 -0.25917978
- -0.70940979 -0.94763469  1.33768175  0.81635603 -0.91250909 -1.32269606
-  1.45042264 -1.34276013  0.29400715 -0.19683635  3.52182074  0.00598479]
-2023-04-08 20:06:16,703 - my_logger - DEBUG - Minimum energy value: -7474.382512862489
-2023-04-08 20:06:16,703 - my_logger - DEBUG - The number of iterations: 1856
-.16270575e+00  5.31311113e-01 -5.36007284e-02 -8.90505850e-02
-  1.46109306e+00 -1.92770312e-02 -6.72329258e-01 -7.69246610e-01
-  2.53127932e-01  1.09026798e+00  6.65998236e-01 -8.81617738e-04
-  7.55714446e-01 -6.96063441e-01 -2.46241835e-01 -1.28663741e+00
- -1.51394966e+00 -2.57041174e-01 -7.09007599e-01 -9.44820810e-01
-  1.33832600e+00  8.17114431e-01 -9.16856304e-01 -1.32180438e+00
-  1.45132183e+00 -1.33947071e+00  2.96761829e-01 -1.94688076e-01
-  3.52200512e+00  1.06310042e-02]
-2023-04-08 19:59:27,776 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16270575e+00  5.31311113e-01 -5.36007284e-02 -8.90505850e-02
-  1.46109306e+00 -1.92770312e-02 -6.72329258e-01 -7.69246610e-01
-  2.53127932e-01  1.09026798e+00  6.65998236e-01 -8.81617738e-04
-  7.55714446e-01 -6.96063441e-01 -2.46241835e-01 -1.28663741e+00
- -1.51394966e+00 -2.57041174e-01 -7.09007599e-01 -9.44820810e-01
-  1.33832600e+00  8.17114431e-01 -9.16856304e-01 -1.32180438e+00
-  1.45132183e+00 -1.33947071e+00  2.96761829e-01 -1.94688076e-01
-  3.52200512e+00  1.06310042e-02]
-2023-04-08 19:59:27,778 - my_logger - DEBUG - Minimum energy value: -7474.382432355378
-2023-04-08 19:59:27,778 - my_logger - DEBUG - Minimum energy value: -7474.382432355378
-2023-04-08 19:59:27,778 - my_logger - DEBUG - Minimum energy value: -7474.382432355378
-2023-04-08 19:59:27,778 - my_logger - DEBUG - The number of iterations: 2000
-2023-04-08 19:59:27,778 - my_logger - DEBUG - The number of iterations: 2000
-2023-04-08 19:59:27,778 - my_logger - DEBUG - The number of iterations: 2000
-2023-04-08 20:06:16,701 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16138332  0.53276057 -0.05030348 -0.08621362  1.46114388 -0.01705539
- -0.67251847 -0.76920034  0.2529616   1.0917551   0.66439977  0.0047528
-  0.7555613  -0.69621015 -0.24615339 -1.28773353 -1.51181055 -0.25917978
- -0.70940979 -0.94763469  1.33768175  0.81635603 -0.91250909 -1.32269606
-  1.45042264 -1.34276013  0.29400715 -0.19683635  3.52182074  0.00598479]
-2023-04-08 20:06:16,701 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16138332  0.53276057 -0.05030348 -0.08621362  1.46114388 -0.01705539
- -0.67251847 -0.76920034  0.2529616   1.0917551   0.66439977  0.0047528
-  0.7555613  -0.69621015 -0.24615339 -1.28773353 -1.51181055 -0.25917978
- -0.70940979 -0.94763469  1.33768175  0.81635603 -0.91250909 -1.32269606
-  1.45042264 -1.34276013  0.29400715 -0.19683635  3.52182074  0.00598479]
-2023-04-08 20:06:16,701 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16138332  0.53276057 -0.05030348 -0.08621362  1.46114388 -0.01705539
- -0.67251847 -0.76920034  0.2529616   1.0917551   0.66439977  0.0047528
-  0.7555613  -0.69621015 -0.24615339 -1.28773353 -1.51181055 -0.25917978
- -0.70940979 -0.94763469  1.33768175  0.81635603 -0.91250909 -1.32269606
-  1.45042264 -1.34276013  0.29400715 -0.19683635  3.52182074  0.00598479]
-2023-04-08 20:06:16,701 - my_logger - DEBUG - Minimum energy geometry:
-[-1.16138332  0.53276057 -0.05030348 -0.08621362  1.46114388 -0.01705539
- -0.67251847 -0.76920034  0.2529616   1.0917551   0.66439977  0.0047528
-  0.7555613  -0.69621015 -0.24615339 -1.28773353 -1.51181055 -0.25917978
- -0.70940979 -0.94763469  1.33768175  0.81635603 -0.91250909 -1.32269606
-  1.45042264 -1.34276013  0.29400715 -0.19683635  3.52182074  0.00598479]
-2023-04-08 20:06:16,703 - my_logger - DEBUG - Minimum energy value: -7474.382512862489
-2023-04-08 20:06:16,703 - my_logger - DEBUG - Minimum energy value: -7474.382512862489
-2023-04-08 20:06:16,703 - my_logger - DEBUG - Minimum energy value: -7474.382512862489
-2023-04-08 20:06:16,703 - my_logger - DEBUG - Minimum energy value: -7474.382512862489
-2023-04-08 20:06:16,703 - my_logger - DEBUG - The number of iterations: 1856
-2023-04-08 20:06:16,703 - my_logger - DEBUG - The number of iterations: 1856
-2023-04-08 20:06:16,703 - my_logger - DEBUG - The number of iterations: 1856
-2023-04-08 20:06:16,703 - my_logger - DEBUG - The number of iterations: 1856
+2023-04-13 21:41:38,742 - my_logger - INFO - Inside lag-opt package.
+2023-04-13 21:41:38,742 - my_logger - INFO - Read-in user arguments.
+2023-04-13 21:41:38,742 - my_logger - DEBUG - calc_type argument: 1
+2023-04-13 21:41:38,742 - my_logger - DEBUG - job_type argument: ts_lag
+2023-04-13 21:41:38,742 - my_logger - DEBUG - n_images argument: 10
+2023-04-13 21:41:38,742 - my_logger - DEBUG - x_min argument: -2.0
+2023-04-13 21:41:38,742 - my_logger - DEBUG - x_max argument: 2.0
+2023-04-13 21:41:38,742 - my_logger - DEBUG - y_min argument: -2.0
+2023-04-13 21:41:38,742 - my_logger - DEBUG - y_max argument: 2.0
+2023-04-13 21:41:38,742 - my_logger - DEBUG - delta argument: 0.07
+2023-04-13 21:41:38,742 - my_logger - DEBUG - step_size_g_opt argument: 0.002
+2023-04-13 21:41:38,742 - my_logger - DEBUG - eps_g_opt argument: 1e-07
+2023-04-13 21:41:38,742 - my_logger - DEBUG - step_size_l_opt argument: 0.0001
+2023-04-13 21:41:38,742 - my_logger - DEBUG - eps_l_opt argument: 1e-09
+2023-04-13 21:41:38,742 - my_logger - DEBUG - max_iter_g_opt argument: 5000
+2023-04-13 21:41:38,742 - my_logger - DEBUG - max_iter_l_opt argument: 2000
+2023-04-13 21:41:38,742 - my_logger - DEBUG - minima1 argument: [-1.1659786, 1.4766458]
+2023-04-13 21:41:38,742 - my_logger - DEBUG - minima2 argument: [1.1330013, -1.4857527]
+2023-04-13 21:41:38,743 - my_logger - DEBUG - special_point argument: [0.1, 0.1]
+2023-04-13 21:41:38,743 - my_logger - DEBUG - geodesic_code argument: /home/kumaranu/Documents/testing_geodesic
+2023-04-13 21:41:38,743 - my_logger - DEBUG - init_geom argument: [0.1, 0.1]
+2023-04-13 21:41:38,743 - my_logger - DEBUG - atomic_symbols argument: []
+2023-04-13 21:41:38,743 - my_logger - DEBUG - action_type argument: 1
+2023-04-13 21:41:38,743 - my_logger - DEBUG - path_grad_type argument: 1
+2023-04-13 21:41:38,743 - my_logger - INFO - This is a transition state calculation.
+2023-04-13 21:41:38,743 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
+2023-04-13 21:41:38,743 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
+r - INFO - Generating an initial path for the Lagrangian path optimization.
+2023-04-13 21:41:38,743 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
+2023-04-13 21:41:38,743 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
+2023-04-13 21:41:38,743 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.

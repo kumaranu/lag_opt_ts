@@ -123,8 +123,16 @@ def get_path_e(path_coords,
             - calc_type=1: Calculate the energy using the Rosenbrock function.
             - calc_type=2: Calculate the energy using the harmonic oscillator potential.
         all_path_e_file (str): File to save energies of all the paths.
+        input_dir (str): A string representing the path to the directory containing input files for the calculation.
+            Default is None.
+        output_dir (str): A string representing the path to the directory to store output files for the calculation.
+            Default is None.
+        ml_model_path (str): A string representing the path to the machine learning model to use for the calculation.
+            Default is None.
+
     Returns:
         list: A list of energies for each geometry in the path.
+        list: A list of energy gradients for each geometry in the path.
     """
     all_e, all_e_grad = get_e_and_e_grad(path_coords,
                                          atomic_symbols=atomic_symbols,

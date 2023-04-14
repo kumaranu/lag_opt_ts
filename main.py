@@ -1,3 +1,5 @@
+import numpy as np
+
 from lag_opt_lib import readIn
 from lag_opt_lib.steepest_descent import steepest_descent
 from lag_opt_lib import lagrangian
@@ -54,15 +56,19 @@ if __name__ == '__main__':
                                         args.n_images,
                                         args.minima2,
                                         geodesic_code=args.geodesic_code,
-                                        xyz_path=args.xyz_path,
                                         xyz_r_p=args.xyz_r_p,
-                                        atomic_symbols=args.atomic_symbols)
+                                        atomic_symbols=args.atomic_symbols,
+                                        initial_path_type=args.initial_path_type)
 
         logger.info('Done with generating initial path generation.'
                     'Calling the path optimization.')
 
+        # print('Reactant:\n', coords_r)
+        # print('Product:\n', coords_p)
+        # import sys
+        # sys.exit()
         if args.calc_type == 0:
-            coords_r, _, _, _, _ =\
+            args.minima1, _, _, _, _ =\
                 steepest_descent(coords_r,
                                  args.step_size_g_opt,
                                  args.eps_g_opt,
@@ -74,7 +80,7 @@ if __name__ == '__main__':
                                  output_dir=str(args.output_dir),
                                  ml_model_path=str(args.ml_model_path))
 
-            coords_p, _, _, _, _ =\
+            args.minima2, _, _, _, _ =\
                 steepest_descent(coords_p,
                                  args.step_size_g_opt,
                                  args.eps_g_opt,
@@ -86,8 +92,19 @@ if __name__ == '__main__':
                                  output_dir=str(args.output_dir),
                                  ml_model_path=str(args.ml_model_path))
 
-        # If the calculation requires molecular systems, use reactant and product geometries as two minima
-        args.minima1, args.minima2 = coords_r, coords_p
+        '''
+        from lag_opt_lib.compare import e_r_diff
+        diff_r = e_r_diff([coords_r, coords_r_opt])
+        print('Difference between reactant and optimized reactant:', diff_r)
+
+        diff_r = e_r_diff([coords_p, coords_p_opt])
+        print('Difference between product and optimized product:', diff_r)
+
+        diff_r = e_r_diff([coords_r_opt, coords_p_opt])
+        print('Difference between optimized reactant and optimized product:', diff_r)
+        '''
+        # import sys
+        # sys.exit()
 
         result =\
             lagrangian.find_critical_path(
@@ -101,12 +118,16 @@ if __name__ == '__main__':
                 action_type=args.action_type,
                 path_grad_type=args.path_grad_type,
                 a=args.a,
+                convergence_type=args.convergence_type,
                 eps=args.eps_l_opt,
+                re_meshing_type=args.re_meshing_type,
+                change_factor=args.change_factor,
                 all_path_e_file=str(args.output_dir) + '/all_path_e.txt',
                 output_path_file=str(args.output_dir) + '/output_path.txt',
                 input_dir=args.input_dir,
                 output_dir=args.output_dir,
-                ml_model_path=str(args.ml_model_path)
+                ml_model_path=str(args.ml_model_path),
+                re_mesh_frequency=args.re_mesh_frequency
             )
 
         print('Just before plots.')
@@ -117,10 +138,27 @@ if __name__ == '__main__':
                                   file_name=args.all_path_e_file,
                                   output_dir=str(args.output_dir))
         elif args.calc_type == 1:
-            plot_contour(args.x_min,
+            if args.lag_opt_plot_type == 0:
+                plot_contour(args.x_min,
+                             args.x_max,
+                             args.y_min,
+                             args.y_max,
+                             args.delta,
+                             result,
+                             calc_type=args.calc_type)
+            elif args.lag_opt_plot_type == 1:
+                #data = np.loadtxt(str(args.output_dir) + '/all_path_e.txt')
+                data = np.loadtxt(str(args.output_dir) + '/lag_opt_path.txt')
+                from lag_opt_lib.plot_functions import plot_gif
+                plot_gif(data,
+                         args.x_min,
                          args.x_max,
                          args.y_min,
                          args.y_max,
                          args.delta,
-                         result,
-                         calc_type=args.calc_type)
+                         end1=args.minima1,
+                         end2=args.minima2,
+                         frame_frequency=args.frame_frequency,
+                         calc_type=args.calc_type,
+                         frames_per_second=args.frames_per_second,
+                         output_dir=str(args.output_dir))

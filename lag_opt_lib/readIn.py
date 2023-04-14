@@ -157,6 +157,49 @@ def read_in():
                     default=1e-9,
                     help='The epsilon value for the energy convergence'
                          'criteria used by the geometry optimization.')
+    ps.add_argument('--convergence_type',
+                    type=int,
+                    default=1,
+                    help='convergence_type = 0 means the full path will'
+                         'be checked for convergence in the Lagrangian'
+                         'path optimization and L2-norm of the path will'
+                         'will be checked for the convergence criterion.'
+                         'convergence_type = 1 means the energy of the'
+                         'highest point along the path will be checked'
+                         'for the Lagrangian path optimization criterion.')
+    ps.add_argument('--re_meshing_type',
+                    type=int,
+                    default=2,
+                    help='re_meshing_type = 0 means normal Lagrangian path'
+                         'optimization will be performed.'
+                         're_meshing_type = 1 means that the path will be altered'
+                         'after each re_mesh_frequency-th Lagrangian optimization step'
+                         'in such a way that two of the lowest energy points along the path'
+                         '(other than the reactant and the product) will be removed and two'
+                         'points will be added at near the highest point along the Lagrangian'
+                         'path which are just the cartesian-mid-points of the neighboring'
+                         'points to the immediate neighboring points.'
+                         're_meshing_type = 2 means that in-addition to re_meshing as in re_meshing_type=1, the'
+                         'spring force constants will be changed using a Gaussian weighted function'
+                         'that enhances the force constants near the highest point along the'
+                         'Lagrangian path but dampens the force constants near the edges of the path.'
+                         'The range of this Gaussian will be (1 - change_factor, 1 + change_factor).')
+    ps.add_argument('--re_mesh_frequency',
+                    type=int,
+                    default=1,
+                    help='This is the frequency after the Lagrangian path will'
+                         'be re_meshed during the path optimization process. For'
+                         'example, re_mesh_frequency=2 means the path will be'
+                         're_meshed after every two steps in the Lagrangian path'
+                         'optimization.')
+    ps.add_argument('--change_factor',
+                    type=float,
+                    default=0.1,
+                    help='This is parameter to control the extent to which we change'
+                         'the force constants when re_meshing_type=2 is used.'
+                         'If change_factor=0.1 is used then a Gaussian function'
+                         'is multiplied with the force constant array along the path'
+                         'with range between (1 - change_factor, 1 + change_factor).')
     ps.add_argument('--eps_l_opt',
                     type=float,
                     default=1e-9,
@@ -182,19 +225,21 @@ def read_in():
                     default=[1.1330013, -1.4857527],
                     help='This is one of the other minimums.'
                          'It could also be the product geometry.')
+    ps.add_argument('--initial_path_type',
+                    type=int,
+                    default=1,
+                    help='initial_path_type = 0 means the initial path will go through'
+                         'a special geometry whose cartesian coordinate is defined'
+                         'using the argument called special_point below.'
+                         'initial_path_type = 1 means the path will simply be a'
+                         'straight cartesian line between the reactant and the product'
+                         'geometries.')
     ps.add_argument('--special_point',
                     type=list,
                     default=[0.1, 0.1],
                     help='This is one of the points on the path.'
                          'It should connect the reactant geometry'
                          'to the product geometry.')
-    ps.add_argument('--xyz_path',
-                    type=str,
-                    default='/home/kumaranu/Documents/testing_geodesic/inputs/12/output.xyz',
-                    help='This is the path to an xyz-formatted file for the list of'
-                         'geometries defining an initial path connecting the reactant'
-                         'to the product. It could be something like the output of the'
-                         'geodesic code.')
     ps.add_argument('--a',
                     type=float,
                     default=200.0,
@@ -238,6 +283,25 @@ def read_in():
                          'path_grad_type = 1 means that only the component of the'
                          'Lagrangian gradient that is perpendicular to the path will'
                          'be used in the Lagrangian path optimization')
+    ps.add_argument('--lag_opt_plot_type',
+                    type=int,
+                    default=1,
+                    help='lag_opt_plot_type = 0 will plot the final optimized path only.'
+                         'lag_opt_plot_type = 1 will plot the all the optimization'
+                         'path after every frame_frequency-th frame in the Lagrangian'
+                         'path optimization process in a gif file.')
+    ps.add_argument('--frame_frequency',
+                    type=int,
+                    default=1,
+                    help='frame_frequency is used in the gif file that shows the'
+                         'Lagrangian path optimization process. For example, if'
+                         'frame_frequency = 2, then every second path in the'
+                         'optimization process will be plotted.')
+    ps.add_argument('--frames_per_second',
+                    type=int,
+                    default=1,
+                    help='This is parameter to control the speed of the Lagrangian'
+                         'path optimization inside the gif file.')
     ps.add_argument('--model_software',
                     type=str,
                     default='mace_model',

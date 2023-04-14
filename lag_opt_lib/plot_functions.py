@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from lag_opt_lib.energy_and_grad import get_e_and_e_grad, grid_gen
+import imageio
 
 
 def plot_multiple_path_es(n,
@@ -68,19 +69,39 @@ def plot_contour(x_min=None, x_max=None, y_min=None, y_max=None, delta=None,
         # Create the contour plot
         origin = 'lower'
         fig2, ax2 = plt.subplots(constrained_layout=True)
-        cs3 = ax2.contourf(x, y, z, contour_levels, cmap='viridis', origin=origin, extend='both')
+        cs3 = ax2.contourf(x,
+                           y,
+                           z,
+                           contour_levels,
+                           cmap='viridis',
+                           origin=origin,
+                           extend='both')
         cs3.cmap.set_under('yellow')
         cs3.cmap.set_over('cyan')
         fig2.colorbar(cs3)
 
-        cs4 = ax2.contour(x, y, z, contour_levels, colors=('k',), linewidths=(1,), linestyles='solid', origin=origin)
-        ax2.clabel(cs4, fmt='%2.1f', colors='w', fontsize=12)
+        cs4 = ax2.contour(x,
+                          y,
+                          z,
+                          contour_levels,
+                          colors=('k',),
+                          linewidths=(1,),
+                          linestyles='solid',
+                          origin=origin)
+        ax2.clabel(cs4,
+                   fmt='%2.1f',
+                   colors='w',
+                   fontsize=12)
 
         # Overlay the optimization path on the plot
         opt_path = np.asarray(opt_path)
-        ax2.plot(opt_path[:, 0], opt_path[:, 1],
-                 '-o', color='brown', markerfacecolor='yellow',
-                 markersize=8, linewidth=3)
+        ax2.plot(opt_path[:, 0],
+                 opt_path[:, 1],
+                 '-o',
+                 color='brown',
+                 markerfacecolor='yellow',
+                 markersize=8,
+                 linewidth=3)
 
         # Show the plot
         plt.show()
@@ -113,8 +134,12 @@ def mol_projection(initial_geometry, final_geometry):
     projected_final_geometry = final_geometry.dot(projection_matrix)
 
     # Plot the 2D projections
-    plt.plot(projected_initial_geometry[:, 0], projected_initial_geometry[:, 1], label='Initial')
-    plt.plot(projected_final_geometry[:, 0], projected_final_geometry[:, 1], label='Final')
+    plt.plot(projected_initial_geometry[:, 0],
+             projected_initial_geometry[:, 1],
+             label='Initial')
+    plt.plot(projected_final_geometry[:, 0],
+             projected_final_geometry[:, 1],
+             label='Final')
     plt.legend()
     plt.show()
 
@@ -150,3 +175,88 @@ def plot_path_e(path_e, x_label='Iterations', y_label='Energy (kcal/mol)',
     ax2.set_ylabel(y_label)
     ax2.set_title('Zoomed in version of the plot above')
     plt.show()
+
+
+def plot_gif(data,
+             x_min=None,
+             x_max=None,
+             y_min=None,
+             y_max=None,
+             delta=None,
+             end1=None,
+             end2=None,
+             frame_frequency=10,
+             calc_type=1,
+             frames_per_second=1,
+             output_dir=None):
+    # Create list of images for animation
+    images = []
+    for i, row in enumerate(data):
+        if i % frame_frequency == 0:
+            x, y = grid_gen(x_min,
+                            x_max,
+                            y_min,
+                            y_max,
+                            delta)
+            x_y_pairs = np.transpose(np.vstack((x.flatten(),
+                                                y.flatten())))
+            z_list, _ = get_e_and_e_grad(x_y_pairs, calc_type=calc_type)
+            z = np.reshape(z_list, x.shape)
+
+            # Set the contour levels for the plot
+            type1 = np.linspace(np.min(z), np.max(z)/9, 25, endpoint=False)
+            type2 = np.linspace(np.max(z)/9, np.max(z)/2, 3, endpoint=False)
+            type3 = np.linspace(np.max(z)/2, np.max(z), 1, endpoint=False)
+            contour_levels = np.hstack((type1, type2, type3))
+
+            # Create the contour plot
+            origin = 'lower'
+            fig, ax = plt.subplots(constrained_layout=True)
+            cs = ax.contourf(x,
+                             y,
+                             z,
+                             contour_levels,
+                             cmap='viridis',
+                             origin=origin,
+                             extend='both')
+            cs.cmap.set_under('yellow')
+            cs.cmap.set_over('cyan')
+            fig.colorbar(cs)
+            cs4 = ax.contour(x,
+                             y,
+                             z,
+                             contour_levels,
+                             colors=('k',),
+                             linewidths=(1,),
+                             linestyles='solid',
+                             origin=origin)
+            ax.clabel(cs4,
+                      fmt='%2.1f',
+                      colors='w',
+                      fontsize=8)
+            row = np.reshape(row, (int(len(row)/2), 2))
+            row = np.vstack((end1, row, end2))
+            plt.plot(row[:, 0],
+                     row[:, 1],
+                     '-o',
+                     color='brown',
+                     markerfacecolor='yellow',
+                     markersize=8,
+                     linewidth=3)
+            plt.xlabel('R_1')
+            plt.ylabel('R_2')
+            plt.title(f'Lagrangian optimization step {i+1}')
+            fig = plt.gcf()
+            fig.canvas.draw()
+            image = np.frombuffer(fig.canvas.tostring_rgb(), dtype='uint8')
+            image = image.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            images.append(image)
+            plt.clf()
+            # close the figure# close the figures
+            plt.close(fig)
+    # Save images as GIF animation
+    imageio.mimsave(output_dir + '/lag_opt_path.gif',
+                    images,
+                    fps=frames_per_second,
+                    loop=1)
+
