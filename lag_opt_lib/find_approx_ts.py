@@ -25,7 +25,7 @@ def get_check_segment(segment_i, segment_f, all_path_energy):
     check_segment = []
     for point in range(segment_i, segment_f):
         check_segment.append(all_path_energy[-1][point])
-    return path_segment_i + np.argmax(check_segment), check_segment
+    return segment_i + np.argmax(check_segment), check_segment
 
 
 def read_in_xyz_file(file_name, config_num):
@@ -57,6 +57,7 @@ def convert_traj_to_xyz(input_file, output_file):
     write(output_file, atoms, format="xyz")
 
 
+'''
 file_path = 'config.xyz'
 model_path = '/home/kumaranu/PycharmProjects/optimization_0/MACE_model_cpu_double.model'
 all_path_e_file = 'all_path_e'
@@ -72,3 +73,4 @@ read_in_xyz_file(filename, approx_ts_loc)
 # line_plot(x,y)
 
 sella_wrapper(file_path, model_path)
+'''

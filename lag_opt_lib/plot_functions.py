@@ -6,21 +6,35 @@ import imageio
 
 def plot_multiple_path_es(n,
                           file_name='all_path_e.txt',
+                          dist_file_name='path_dists.txt',
                           output_dir=None):
     # load the text file
     with open(file_name, 'r') as f:
         lines = f.readlines()
+    with open(dist_file_name, 'r') as f:
+        dist_lines = f.readlines()
     data = []
+    dists_data = []
     for i in range(0, len(lines), n):
         row = lines[i].strip().split()
         values = [float(val) for val in row]  # convert the values to floats
         data.append(values)
 
+        dists_row = dist_lines[i].strip().split()
+        dists_values = [float(val) for val in dists_row]
+        dists_data.append(dists_values)
+
     fig, ax = plt.subplots(figsize=(8, 6))
-    for i, values in enumerate(data):
-        plt.plot(values,
-                 label=f'Data {i + 1}')
-    ax.set_xlabel('Lagrangian path index')
+    for i, (values, dists_values) in enumerate(zip(data, dists_data)):
+        plt.plot(dists_values,
+                 values,
+                 label=f'Iteration {i * n}',
+                 marker='o',
+                 markerfacecolor='yellow',
+                 markersize=0.75,
+                 linewidth=0.4
+                 )
+    ax.set_xlabel('Lagrangian path distance from reactant')
     ax.set_ylabel('Energy (eV)')
     # ax.set_title('Lagrangian path optimization energy profiles')
     ax.legend()

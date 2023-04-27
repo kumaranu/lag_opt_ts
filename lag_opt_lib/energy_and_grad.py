@@ -13,8 +13,7 @@ from ase import Atoms
 
 
 def get_e_and_e_grad(coords, atomic_symbols=None, model_software='mace_model',
-                     calc_type=0, input_dir=None, output_dir=None,
-                     ml_model_path=None):
+                     calc_type=0, output_dir=None, ml_model_path=None):
     """
     Calculates the potential energy and gradient of a set of molecular coordinates using
     the Universal Force Field (UFF).
@@ -106,7 +105,6 @@ def get_path_e(path_coords,
                atomic_symbols=None,
                calc_type=None,
                all_path_e_file=None,
-               input_dir=None,
                output_dir=None,
                ml_model_path=None):
     """
@@ -137,7 +135,6 @@ def get_path_e(path_coords,
     all_e, all_e_grad = get_e_and_e_grad(path_coords,
                                          atomic_symbols=atomic_symbols,
                                          calc_type=calc_type,
-                                         input_dir=input_dir,
                                          output_dir=output_dir,
                                          ml_model_path=ml_model_path)
 

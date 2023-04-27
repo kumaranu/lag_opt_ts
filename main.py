@@ -1,5 +1,4 @@
 import numpy as np
-
 from lag_opt_lib import readIn
 from lag_opt_lib.steepest_descent import steepest_descent
 from lag_opt_lib import lagrangian
@@ -28,7 +27,6 @@ if __name__ == '__main__':
                              calc_type=args.calc_type,
                              labels=args.atomic_symbols,
                              model_software=args.model_software,
-                             input_dir=str(args.input_dir),
                              output_dir=str(args.output_dir),
                              ml_model_path=str(args.ml_model_path))
 
@@ -63,34 +61,40 @@ if __name__ == '__main__':
         logger.info('Done with generating initial path generation.'
                     'Calling the path optimization.')
 
-        # print('Reactant:\n', coords_r)
-        # print('Product:\n', coords_p)
-        # import sys
-        # sys.exit()
         if args.calc_type == 0:
-            args.minima1, _, _, _, _ =\
-                steepest_descent(coords_r,
-                                 args.step_size_g_opt,
-                                 args.eps_g_opt,
-                                 args.max_iter_g_opt,
-                                 calc_type=args.calc_type,
-                                 labels=args.atomic_symbols,
-                                 model_software=args.model_software,
-                                 input_dir=str(args.input_dir),
-                                 output_dir=str(args.output_dir),
-                                 ml_model_path=str(args.ml_model_path))
+            if args.opt_type == 1:
+                from lag_opt_lib.steepest_descent import ase_opt
+                args.minima1 = ase_opt(coords0=np.reshape(coords_r,
+                                                          (len(atomic_symbols), 3)),
+                                       labels=atomic_symbols,
+                                       ml_model_path=args.ml_model_path)
 
-            args.minima2, _, _, _, _ =\
-                steepest_descent(coords_p,
-                                 args.step_size_g_opt,
-                                 args.eps_g_opt,
-                                 args.max_iter_g_opt,
-                                 calc_type=args.calc_type,
-                                 labels=args.atomic_symbols,
-                                 model_software=args.model_software,
-                                 input_dir=str(args.input_dir),
-                                 output_dir=str(args.output_dir),
-                                 ml_model_path=str(args.ml_model_path))
+                args.minima2 = ase_opt(coords0=np.reshape(coords_p,
+                                                          (len(atomic_symbols), 3)),
+                                       labels=atomic_symbols,
+                                       ml_model_path=args.ml_model_path)
+            elif args.opt_type == 0:
+                args.minima1, _, _, _, _ =\
+                    steepest_descent(coords_r,
+                                     args.step_size_g_opt,
+                                     args.eps_g_opt,
+                                     args.max_iter_g_opt,
+                                     calc_type=args.calc_type,
+                                     labels=args.atomic_symbols,
+                                     model_software=args.model_software,
+                                     output_dir=str(args.output_dir),
+                                     ml_model_path=str(args.ml_model_path))
+
+                args.minima2, _, _, _, _ =\
+                    steepest_descent(coords_p,
+                                     args.step_size_g_opt,
+                                     args.eps_g_opt,
+                                     args.max_iter_g_opt,
+                                     calc_type=args.calc_type,
+                                     labels=args.atomic_symbols,
+                                     model_software=args.model_software,
+                                     output_dir=str(args.output_dir),
+                                     ml_model_path=str(args.ml_model_path))
 
         '''
         from lag_opt_lib.compare import e_r_diff
@@ -136,6 +140,7 @@ if __name__ == '__main__':
             plot_nth = args.nth
             plot_multiple_path_es(plot_nth,
                                   file_name=args.all_path_e_file,
+                                  dist_file_name=str(args.output_dir) + '/path_dists.txt',
                                   output_dir=str(args.output_dir))
         elif args.calc_type == 1:
             if args.lag_opt_plot_type == 0:
@@ -147,7 +152,7 @@ if __name__ == '__main__':
                              result,
                              calc_type=args.calc_type)
             elif args.lag_opt_plot_type == 1:
-                #data = np.loadtxt(str(args.output_dir) + '/all_path_e.txt')
+                # data = np.loadtxt(str(args.output_dir) + '/all_path_e.txt')
                 data = np.loadtxt(str(args.output_dir) + '/lag_opt_path.txt')
                 from lag_opt_lib.plot_functions import plot_gif
                 plot_gif(data,

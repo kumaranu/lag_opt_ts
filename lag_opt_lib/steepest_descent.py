@@ -1,10 +1,13 @@
-import numpy as np
 from lag_opt_lib.energy_and_grad import get_e_and_e_grad
 from lag_opt_lib.logger import get_logger
+from ase import Atoms
+from ase.optimize import BFGS
+import numpy as np
+from mace.calculators import MACECalculator
 
 
 def steepest_descent(coords0, step_size, eps, max_iter, calc_type=2, labels=(),
-                     model_software='mace_model', input_dir=None, output_dir=None,
+                     model_software='mace_model', output_dir=None,
                      ml_model_path=None):
     """
     Performs the steepest descent optimization on a set of atomic coordinates.
@@ -31,7 +34,6 @@ def steepest_descent(coords0, step_size, eps, max_iter, calc_type=2, labels=(),
         energy, grad = get_e_and_e_grad(coords, atomic_symbols=labels,
                                         model_software=model_software,
                                         calc_type=calc_type,
-                                        input_dir=input_dir,
                                         output_dir=output_dir,
                                         ml_model_path=ml_model_path)  # calculate energy
 
@@ -50,3 +52,24 @@ def steepest_descent(coords0, step_size, eps, max_iter, calc_type=2, labels=(),
     logger.debug('Minimum energy value: ' + str(energy_old))
     logger.debug('The number of iterations: ' + str(max_iter))
     return [coords, energy_old, max_iter, opt_path, path_e]
+
+
+def convert_traj_to_xyz(input_file, output_file):
+    from ase.io import read, write
+    atoms = read(input_file, index=":", format="traj")
+    write(output_file, atoms, format="xyz")
+
+
+def ase_opt(coords0=None,
+            labels=None,
+            ml_model_path=None):
+    calculator = MACECalculator(model_path=ml_model_path,
+                                device='cpu')
+    atoms = Atoms(symbols=labels,
+                  positions=coords0)
+    atoms.set_calculator(calculator)
+    dyn = BFGS(atoms)
+    dyn.run(fmax=0.05)
+    opt_geom = atoms.copy()
+    optimized_positions = opt_geom.get_positions()
+    return optimized_positions.flatten()

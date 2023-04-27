@@ -62,6 +62,33 @@ def read_in_multiple_xyz_file(file_path,
     return [atomic_symbols, all_geoms]
 
 
+def read_in_multiple_xyz_file2(file_path):
+    # Replace "/path/to/file.xyz" with the actual path to your .xyz file
+    with open(file_path, "r") as f:
+        # Read the number of atoms from the first line
+        num_atoms = int(f.readline())
+        atomic_symbols = []
+        all_coords = []
+        while True:
+            # Read the comment line
+            f.readline()
+
+            # Try to read a configuration
+            try:
+                # Read the atomic positions
+                data = np.genfromtxt(f, max_rows=num_atoms)
+                print('data:\n', data)
+                # Extract the atomic symbols and positions
+                symbols = data[:, 0]
+                positions = data[:, 1:]
+                atomic_symbols.append(symbols)
+                all_coords.append(positions)
+            except ValueError:
+                # If we can't read a configuration, we've reached the end of the file
+                break
+    return atomic_symbols[-1], all_coords[-1]
+
+
 def read_in():
     """
     Parse command-line arguments and return a namespace containing
@@ -144,6 +171,13 @@ def read_in():
                     default=0.07,
                     help='The spacing between the grid points'
                          'used to generate the contour plot.')
+    ps.add_argument('--opt_type',
+                    type=int,
+                    default=0,
+                    help='opt_type = 0 means locally built Steepest descent'
+                         'algorithm will be called for geometry optimization.'
+                         'opt_type = 1 means ase geometry optimizer will be'
+                         'called for the geometry optimization.')
     ps.add_argument('--step_size_g_opt',
                     type=float,
                     default=0.0001,
@@ -308,13 +342,12 @@ def read_in():
                     help='The is the software used to get energy and forces.'
                          'model_software = mace_model uses a mace model'
                          'model_software = rdkit uses rdkit library')
+    ps.add_argument('--ml_model_path',
+                    type=pathlib.Path,
+                    default='',
+                    help='This is the path to the Mace model used for'
+                         'energy and force calculations.')
     args = ps.parse_args()
-    if args.model_software == 'mace_model':
-        ps.add_argument('--ml_model_path',
-                        type=pathlib.Path,
-                        default=str(args.input_dir) + '/ml_models/MACE_model_cpu_double.model',
-                        help='This is the path to the Mace model used for'
-                             'energy and force calculations.')
     if os.path.exists(args.output_dir):
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
@@ -356,6 +389,7 @@ def read_in():
 
     logger = get_logger('my_logger',
                         log_file=str(args.output_dir) + '/lag_opt.log')
+    '''
     logger.debug(f"calc_type argument: {args.calc_type}")
     logger.debug(f"job_type argument: {args.job_type}")
     logger.debug(f"n_images argument: {args.n_images}")
@@ -379,4 +413,6 @@ def read_in():
     logger.debug(f"atomic_symbols argument: {args.atomic_symbols}")
     logger.debug(f"action_type argument: {args.action_type}")
     logger.debug(f"path_grad_type argument: {args.path_grad_type}")
+    '''
+    logger.debug(vars(args))
     return args

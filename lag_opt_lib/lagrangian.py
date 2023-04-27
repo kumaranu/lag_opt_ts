@@ -1,9 +1,11 @@
-import copy
+# import copy
+import sys
 
 import numpy as np
 import os
 from lag_opt_lib import readIn
 from lag_opt_lib.energy_and_grad import get_path_e
+from lag_opt_lib.compare import e_r_diff
 from lag_opt_lib.loggingFunctions import save_all_geoms
 
 # from lag_opt_lib.logger import get_logger
@@ -228,6 +230,7 @@ def grad_lagrangian(all_pts, a, path_e, path_e_grad, action_type=1):
     # print('\nShapes of key variables')
     # print('np.shape(all_pts):', np.shape(all_pts))
     # print('np.shape(path_e):', np.shape(path_e))
+    # print('path_e:', path_e)
     # print('np.shape(path_e_grad):', np.shape(path_e_grad))
     # print('np.shape(a):', np.shape(a))
 
@@ -337,7 +340,7 @@ def re_meshing(path,
     """
     # print('Inside re-meshing')
     # print('np.shape(path):', np.shape(path))
-    # print('1:', np.shape(path_e))
+    # print('1:', path_e)
     index_max = np.argmax(path_e)
 
     mid_1 = 0.5 * (path[index_max-1] + path[index_max])
@@ -357,7 +360,7 @@ def re_meshing(path,
     path_e.pop(1)
     path_e.pop(-2)
     # print('path_e B:', *path_e, sep='\n')
-    # print('2:', np.shape(path_e))
+    # print('2:', path_e)
 
     # print('path_e_grad A:', *path_e_grad, sep='\n')
     path_e_grad.insert(index_max+1, m2_e_grad)
@@ -472,14 +475,13 @@ def find_critical_path(calc_type,
     all_path_e, all_path_coords = [], []
 
     a_list = [a] * (len(initial_points) + 1)
-
+    path_dists = []
     for step in range(num_steps):
-        # print('step:', step)
+        print('step:', step)
         path_e, path_e_grad = get_path_e(points,
                                          atomic_symbols=atomic_symbols,
                                          calc_type=calc_type,
                                          all_path_e_file=all_path_e_file,
-                                         input_dir=input_dir,
                                          output_dir=output_dir,
                                          ml_model_path=ml_model_path)
 
@@ -489,13 +491,16 @@ def find_critical_path(calc_type,
         path_e_grad.append(end_e_grad)
         all_path_e.append(path_e)
         all_pts = np.vstack((start, points, end))
+        path_dists.append(e_r_diff(all_pts))
+        print("path_dists:", path_dists)
 
-        all_pts_old = copy.deepcopy(all_pts)
+        # sys.exit()
+        # all_pts_old = copy.deepcopy(all_pts)
         if re_meshing_type:
-            print('re_mesh_frequency:', re_mesh_frequency)
-            if step % re_mesh_frequency == 0:
+            # print('re_mesh_frequency:', re_mesh_frequency)
+            if (step + 1) % re_mesh_frequency == 0:
                 # print('Before re-meshing')
-                print(np.shape(path_e))
+                # print('np.shape(path_e):', np.shape(path_e))
 
                 all_pts, path_e, path_e_grad, a_list = re_meshing(all_pts,
                                                                   path_e,
@@ -509,6 +514,7 @@ def find_critical_path(calc_type,
                 # print('After re-meshing')
                 # print(np.shape(path_e))
             # print('a_list inside lag_opt loop:', a_list)
+        '''
         # convert list of lists to list of tuples
         all_pts_old_tuples = [tuple(x) for x in all_pts_old]
         all_pts_tuples = [tuple(x) for x in all_pts]
@@ -521,6 +527,7 @@ def find_critical_path(calc_type,
         different_pts = set_all_pts_old.symmetric_difference(set_all_pts)
 
         print('different_pts:', different_pts)
+        '''
         if path_grad_type == 1:
             _, perpendicular_grads = path_grad_components(all_pts,
                                                           path_e_grad)
@@ -551,18 +558,24 @@ def find_critical_path(calc_type,
                 print('Lagrangian path optimization converged in ', step, 'steps.')
                 break
             points_old = points
+
         all_path_coords.append(points)
     all_path_coords = np.reshape(all_path_coords,
                                  (len(all_path_coords),
                                   np.prod(np.shape(all_path_coords)[1:])))
+    print('np.shape(all_path_coords):', np.shape(all_path_coords))
+
     if calc_type == 0:
+        '''
         counter = 0
         os.mkdir(str(output_dir) + '/lag_opt_paths')
         for path_coords in all_path_coords:
+            print('np.shape(path_coords):', np.shape(path_coords))
             save_all_geoms(atomic_symbols,
                            path_coords,
                            log_file=str(output_dir) + '/lag_opt_paths/lag_opt_path' + str(counter) + '.xyz')
             counter = counter + 1
+        '''
     elif calc_type == 1:
         np.savetxt(str(output_dir) + '/lag_opt_path.txt',
                    all_path_coords,
@@ -575,6 +588,6 @@ def find_critical_path(calc_type,
     np.savetxt(all_path_e_file,
                np.atleast_2d(all_path_e),
                fmt='%.8f')
-
+    np.savetxt(str(output_dir) + '/path_dists.txt', path_dists, fmt='%.5f')
     # Return the final points.
     return np.vstack((start, points, end))
