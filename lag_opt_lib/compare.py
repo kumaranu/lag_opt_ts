@@ -17,6 +17,49 @@ def e_r_diff1(atoms):
 
 
 def e_r_diff(geoms_list):
+    """
+    Computes the distances between consecutive `wij` values for a list of geometries.
+
+    Args:
+        geoms_list (list): A list of 3D coordinates of atoms in a molecule. Each element in the list
+                           is a 2D numpy array of shape `(N, 3)`, where `N` is the number of atoms
+                           in the molecule.
+
+    Returns:
+        dists (list): A list of distances between consecutive `wij` values. The length of the list
+                      is `len(geoms_list) - 1`.
+    """
+    # Get bond list and equilibrium bond length for the first geometry in geoms_list
+    rijlist, re = get_bond_list(geoms_list[0])
+
+    # Compute scaling factor for the Morse potential
+    scaler = morse_scaler(alpha=0.7, re=re)
+
+    # Compute wij values for the first geometry and store in wij_old
+    wij_old, _ = compute_wij(geoms_list[0], rijlist, scaler)
+
+    dists = []
+    distance = 0.0
+
+    # Iterate through remaining geometries in geoms_list
+    for i, geom in enumerate(geoms_list[1:]):
+
+        # Compute wij values for current geometry
+        wij, _ = compute_wij(geom, rijlist, scaler)
+        print('wij:\n', wij)
+
+        # Add distance between wij and wij_old to distance variable and dists list
+        distance += np.linalg.norm(wij - wij_old)
+        dists.append(distance)
+
+        # Set wij_old to current wij value for next iteration
+        wij_old = wij
+
+    return dists
+
+
+'''
+def e_r_diff(geoms_list):
     wij_list = []
 
     rijlist, re = get_bond_list(geoms_list[0])
@@ -34,7 +77,7 @@ def e_r_diff(geoms_list):
             dists.append(distance)
         wij_old = wij
     return dists
-
+'''
 
 '''
 def e_r_diff(geoms_list):
