@@ -4,17 +4,6 @@ from geodesic_interpolate.coord_utils import morse_scaler
 from geodesic_interpolate.coord_utils import compute_wij
 
 
-def e_r_diff1(atoms):
-    wij_list = []
-    for atom in atoms:
-        geom = atom.get_positions()
-        rijlist, re = get_bond_list(geom)
-        scaler = morse_scaler(alpha=0.7, re=re)
-        wij, _ = compute_wij(geom, rijlist, scaler)
-        wij_list.append(wij)
-    diff_internal_coord = np.linalg.norm(wij_list[0] - wij_list[1])
-    return diff_internal_coord
-
 
 def e_r_diff(geoms_list):
     """
@@ -59,6 +48,18 @@ def e_r_diff(geoms_list):
 
 
 '''
+def e_r_diff1(atoms):
+    wij_list = []
+    for atom in atoms:
+        geom = atom.get_positions()
+        rijlist, re = get_bond_list(geom)
+        scaler = morse_scaler(alpha=0.7, re=re)
+        wij, _ = compute_wij(geom, rijlist, scaler)
+        wij_list.append(wij)
+    diff_internal_coord = np.linalg.norm(wij_list[0] - wij_list[1])
+    return diff_internal_coord
+
+
 def e_r_diff(geoms_list):
     wij_list = []
 
