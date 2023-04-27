@@ -4,7 +4,6 @@ from geodesic_interpolate.coord_utils import morse_scaler
 from geodesic_interpolate.coord_utils import compute_wij
 
 
-
 def e_r_diff(geoms_list):
     """
     Computes the distances between consecutive `wij` values for a list of geometries.
