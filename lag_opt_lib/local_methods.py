@@ -38,6 +38,7 @@ def newton_raphson(
     count = 0
     natoms = len(atoms.arrays['positions'])
     trajectory = [copy.deepcopy(atoms)]
+
     while count < max_iter:
         mlcalculator = NewtonNet(
             model_path=newtonnet_model_path.split(":"),
