@@ -68,11 +68,12 @@ if __name__ == '__main__':
                                                           (len(atomic_symbols), 3)),
                                        labels=atomic_symbols,
                                        ml_model_path=args.ml_model_path)
-
+                print('shape of min1', np.shape(args.minima1))
                 args.minima2 = ase_opt(coords0=np.reshape(coords_p,
                                                           (len(atomic_symbols), 3)),
                                        labels=atomic_symbols,
                                        ml_model_path=args.ml_model_path)
+                print('shape of min2', np.shape(args.minima2))
             elif args.opt_type == 0:
                 args.minima1, _, _, _, _ =\
                     steepest_descent(coords_r,

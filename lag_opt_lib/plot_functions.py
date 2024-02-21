@@ -27,7 +27,7 @@ def plot_multiple_path_es(n,
     fig, ax = plt.subplots(figsize=(8, 6))
     for i, (values, dists_values) in enumerate(zip(data, dists_data)):
         plt.plot(dists_values,
-                 values,
+                 values[1:],
                  label=f'Iteration {i * n}',
                  marker='o',
                  markerfacecolor='yellow',

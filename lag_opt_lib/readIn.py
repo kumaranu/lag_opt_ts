@@ -77,7 +77,7 @@ def read_in_multiple_xyz_file2(file_path):
             try:
                 # Read the atomic positions
                 data = np.genfromtxt(f, max_rows=num_atoms)
-                print('data:\n', data)
+                # print('data:\n', data)
                 # Extract the atomic symbols and positions
                 symbols = data[:, 0]
                 positions = data[:, 1:]

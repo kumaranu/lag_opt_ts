@@ -34,7 +34,7 @@ def e_r_diff(geoms_list):
 
         # Compute wij values for current geometry
         wij, _ = compute_wij(geom, rijlist, scaler)
-        print('wij:\n', wij)
+        ## print('wij:\n', wij)
 
         # Add distance between wij and wij_old to distance variable and dists list
         distance += np.linalg.norm(wij - wij_old)

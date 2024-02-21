@@ -405,8 +405,8 @@ def change_forces(a, max_n_index, change_factor=0.3, change_force_type=1):
     elif change_force_type == 2:
         gauss = [gaussian(i, max_n_index, 2) + 1 - change_factor
                  for i in np.arange(len(a))]
-        print('gaussian_function:', *gauss, sep='\n')
-        print('change_factor:', change_factor)
+        ## print('gaussian_function:', *gauss, sep='\n')
+        ## print('change_factor:', change_factor)
         return np.asarray(a) * np.asarray(gauss)
 
 
@@ -477,7 +477,7 @@ def find_critical_path(calc_type,
     a_list = [a] * (len(initial_points) + 1)
     path_dists = []
     for step in range(num_steps):
-        print('step:', step)
+        ## print('step:', step)
         path_e, path_e_grad = get_path_e(points,
                                          atomic_symbols=atomic_symbols,
                                          calc_type=calc_type,
@@ -492,7 +492,7 @@ def find_critical_path(calc_type,
         all_path_e.append(path_e)
         all_pts = np.vstack((start, points, end))
         path_dists.append(e_r_diff(all_pts))
-        print("path_dists:", path_dists)
+        ## print("path_dists:", path_dists)
 
         # sys.exit()
         # all_pts_old = copy.deepcopy(all_pts)
@@ -526,7 +526,7 @@ def find_critical_path(calc_type,
         # find the symmetric difference between the two sets
         different_pts = set_all_pts_old.symmetric_difference(set_all_pts)
 
-        print('different_pts:', different_pts)
+        ## print('different_pts:', different_pts)
         '''
         if path_grad_type == 1:
             _, perpendicular_grads = path_grad_components(all_pts,
@@ -563,10 +563,10 @@ def find_critical_path(calc_type,
     all_path_coords = np.reshape(all_path_coords,
                                  (len(all_path_coords),
                                   np.prod(np.shape(all_path_coords)[1:])))
-    print('np.shape(all_path_coords):', np.shape(all_path_coords))
+    # print('np.shape(all_path_coords):', np.shape(all_path_coords))
 
+    '''
     if calc_type == 0:
-        '''
         counter = 0
         os.mkdir(str(output_dir) + '/lag_opt_paths')
         for path_coords in all_path_coords:
@@ -575,8 +575,9 @@ def find_critical_path(calc_type,
                            path_coords,
                            log_file=str(output_dir) + '/lag_opt_paths/lag_opt_path' + str(counter) + '.xyz')
             counter = counter + 1
-        '''
-    elif calc_type == 1:
+    '''
+
+    if calc_type == 1:
         np.savetxt(str(output_dir) + '/lag_opt_path.txt',
                    all_path_coords,
                    fmt='%.5f')

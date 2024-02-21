@@ -1,34 +1,13 @@
-2023-04-18 17:25:29,425 - my_logger - INFO - Inside lag-opt package.
-2023-04-18 17:25:29,425 - my_logger - INFO - Read-in user arguments.
-2023-04-18 17:25:29,425 - my_logger - DEBUG - calc_type argument: 0
-2023-04-18 17:25:29,425 - my_logger - DEBUG - job_type argument: ts_lag
-2023-04-18 17:25:29,425 - my_logger - DEBUG - n_images argument: 40
-2023-04-18 17:25:29,425 - my_logger - DEBUG - x_min argument: -2.0
-2023-04-18 17:25:29,425 - my_logger - DEBUG - x_max argument: 2.0
-2023-04-18 17:25:29,425 - my_logger - DEBUG - y_min argument: -2.0
-2023-04-18 17:25:29,425 - my_logger - DEBUG - y_max argument: 2.0
-2023-04-18 17:25:29,425 - my_logger - DEBUG - delta argument: 0.07
-2023-04-18 17:25:29,425 - my_logger - DEBUG - step_size_g_opt argument: 0.002
-2023-04-18 17:25:29,425 - my_logger - DEBUG - eps_g_opt argument: 1e-07
-2023-04-18 17:25:29,425 - my_logger - DEBUG - step_size_l_opt argument: 0.001
-2023-04-18 17:25:29,425 - my_logger - DEBUG - eps_l_opt argument: 1e-09
-2023-04-18 17:25:29,425 - my_logger - DEBUG - max_iter_g_opt argument: 200
-2023-04-18 17:25:29,425 - my_logger - DEBUG - max_iter_l_opt argument: 100
-2023-04-18 17:25:29,425 - my_logger - DEBUG - minima1 argument: [-1.1659786, 1.4766458]
-2023-04-18 17:25:29,425 - my_logger - DEBUG - minima2 argument: [1.1330013, -1.4857527]
-2023-04-18 17:25:29,425 - my_logger - DEBUG - special_point argument: [0.1, 0.1]
-2023-04-18 17:25:29,426 - my_logger - DEBUG - geodesic_code argument: /home/kumaranu/Documents/testing_geodesic
-2023-04-18 17:25:29,426 - my_logger - DEBUG - init_geom argument: [-1.114431, 0.174212, -0.082544, -0.045054, 1.08464, -0.011421, -0.65645, -1.13852, 0.200052, 1.117217, 0.297247, 0.06366, 0.8052, -1.060986, -0.20347, -1.238315, -1.86305, -0.38273, -0.768333, -1.360187, 1.27608, 0.940937, -1.281426, -1.276874, 1.462818, -1.710564, 0.387237, -0.16701, 3.060957, -0.021043]
-2023-04-18 17:25:29,426 - my_logger - DEBUG - atomic_symbols argument: ['O', 'C', 'C', 'O', 'C', 'H', 'H', 'H', 'H', 'Li']
-2023-04-18 17:25:29,426 - my_logger - DEBUG - action_type argument: 1
-2023-04-18 17:25:29,426 - my_logger - DEBUG - path_grad_type argument: 1
-2023-04-18 17:25:29,426 - my_logger - INFO - This is a transition state calculation.
-2023-04-18 17:25:29,426 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
-2023-04-18 17:25:51,206 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
-5:29,426 - my_logger - DEBUG - path_grad_type argument: 1
-2023-04-18 17:25:29,426 - my_logger - INFO - This is a transition state calculation.
-2023-04-18 17:25:29,426 - my_logger - INFO - This is a transition state calculation.
-2023-04-18 17:25:29,426 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
-2023-04-18 17:25:29,426 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
-2023-04-18 17:25:51,206 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
-2023-04-18 17:25:51,206 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
+2024-02-20 20:15:00,084 - my_logger - INFO - Inside lag-opt package.
+2024-02-20 20:15:00,084 - my_logger - INFO - Read-in user arguments.
+2024-02-20 20:15:00,084 - my_logger - DEBUG - {'input_dir': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/inputs'), 'output_dir': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/outputs'), 'calc_type': 0, 'job_type': 'ts_lag', 'n_images': 40, 'x_min': -2.0, 'x_max': 2.0, 'y_min': -2.0, 'y_max': 2.0, 'delta': 0.07, 'opt_type': 1, 'step_size_g_opt': 0.002, 'step_size_l_opt': 0.001, 'eps_g_opt': 1e-07, 'convergence_type': 0, 're_meshing_type': 1, 're_mesh_frequency': 15, 'change_factor': 0.1, 'eps_l_opt': 1e-09, 'max_iter_g_opt': 100, 'max_iter_l_opt': 200, 'minima1': [-1.1659786, 1.4766458], 'minima2': [1.1330013, -1.4857527], 'initial_path_type': 1, 'special_point': [0.1, 0.1], 'a': 150.0, 'nth': 20, 'geodesic_code': '/home/kumaranu/Documents/testing_geodesic', 'xyz_r_p': PosixPath('/home/kumaranu/Documents/testing_geodesic/inputs/abcd1/34/34.xyz'), 'xyz_file_init_geom': PosixPath('/home/kumaranu/Documents/testing_geodesic/inputs/abcd/A.xyz'), 'action_type': 1, 'path_grad_type': 1, 'lag_opt_plot_type': 1, 'frame_frequency': 100, 'frames_per_second': 1, 'model_software': 'mace_model', 'ml_model_path': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/inputs/ml_models/MACE_model_cpu_double.model'), 'init_geom': [-1.114431, 0.174212, -0.082544, -0.045054, 1.08464, -0.011421, -0.65645, -1.13852, 0.200052, 1.117217, 0.297247, 0.06366, 0.8052, -1.060986, -0.20347, -1.238315, -1.86305, -0.38273, -0.768333, -1.360187, 1.27608, 0.940937, -1.281426, -1.276874, 1.462818, -1.710564, 0.387237, -0.16701, 3.060957, -0.021043], 'atomic_symbols': ['O', 'C', 'C', 'O', 'C', 'H', 'H', 'H', 'H', 'Li'], 'all_path_e_file': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/outputs/all_path_e.txt')}
+2024-02-20 20:15:00,084 - my_logger - INFO - This is a transition state calculation.
+2024-02-20 20:15:00,084 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
+2024-02-20 20:15:20,915 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
+2.0, 'delta': 0.07, 'opt_type': 1, 'step_size_g_opt': 0.002, 'step_size_l_opt': 0.001, 'eps_g_opt': 1e-07, 'convergence_type': 0, 're_meshing_type': 1, 're_mesh_frequency': 15, 'change_factor': 0.1, 'eps_l_opt': 1e-09, 'max_iter_g_opt': 100, 'max_iter_l_opt': 200, 'minima1': [-1.1659786, 1.4766458], 'minima2': [1.1330013, -1.4857527], 'initial_path_type': 1, 'special_point': [0.1, 0.1], 'a': 150.0, 'nth': 20, 'geodesic_code': '/home/kumaranu/Documents/testing_geodesic', 'xyz_r_p': PosixPath('/home/kumaranu/Documents/testing_geodesic/inputs/abcd1/34/34.xyz'), 'xyz_file_init_geom': PosixPath('/home/kumaranu/Documents/testing_geodesic/inputs/abcd/A.xyz'), 'action_type': 1, 'path_grad_type': 1, 'lag_opt_plot_type': 1, 'frame_frequency': 100, 'frames_per_second': 1, 'model_software': 'mace_model', 'ml_model_path': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/inputs/ml_models/MACE_model_cpu_double.model'), 'init_geom': [-1.114431, 0.174212, -0.082544, -0.045054, 1.08464, -0.011421, -0.65645, -1.13852, 0.200052, 1.117217, 0.297247, 0.06366, 0.8052, -1.060986, -0.20347, -1.238315, -1.86305, -0.38273, -0.768333, -1.360187, 1.27608, 0.940937, -1.281426, -1.276874, 1.462818, -1.710564, 0.387237, -0.16701, 3.060957, -0.021043], 'atomic_symbols': ['O', 'C', 'C', 'O', 'C', 'H', 'H', 'H', 'H', 'Li'], 'all_path_e_file': PosixPath('/home/kumaranu/PycharmProjects/optimization_0/outputs/all_path_e.txt')}
+2024-02-20 20:15:00,084 - my_logger - INFO - This is a transition state calculation.
+2024-02-20 20:15:00,084 - my_logger - INFO - This is a transition state calculation.
+2024-02-20 20:15:00,084 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
+2024-02-20 20:15:00,084 - my_logger - INFO - Generating an initial path for the Lagrangian path optimization.
+2024-02-20 20:15:20,915 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
+2024-02-20 20:15:20,915 - my_logger - INFO - Done with generating initial path generation.Calling the path optimization.
