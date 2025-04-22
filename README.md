@@ -38,7 +38,7 @@ This code performs the following two tasks:
 ## Contributing
 
 This project is not yet open for contributions from the community!
-Contact kumaranu@lbl.gov for more details.
+Contact kumar@quantumcircuits.com for more details.
 
 ## License
 
