@@ -1,3 +1,16 @@
+# lag_opt_ts
+
+## Overview
+
+`lag_opt_ts` is an open-source Python package designed to simplify the process of comparing molecular geometry in xyz file with one or more geometries present in h5 files.
+
+## Installation
+
+To install `lag_opt_ts` using the Python package manager `pip`, run the following command:
+
+```bash
+pip install lag_opt_ts
+
 
 More details regarding the theory will be updated on the overleaf
 link (https://www.overleaf.com/read/gcghnxkvqnms).
@@ -48,4 +61,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * Anup Kumar
 * Sam Blau
-
